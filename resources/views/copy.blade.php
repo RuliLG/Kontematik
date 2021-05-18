@@ -23,9 +23,11 @@
                 @endforeach
                 </nav>
             </aside>
+            @if (isset($service))
             <div class="bg-white overflow-hidden shadow-sm p-8 sm:rounded-lg md:col-span-2 lg:col-span-3">
                 <livewire:copywriter :service="$service" />
             </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

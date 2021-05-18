@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+header('X-Robots-Tag: noindex, nofollow');
+
 Route::get('/', function () {
     return view('welcome');
 });
