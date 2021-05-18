@@ -43,10 +43,10 @@ class Copywriter extends Component
         try {
             $response = (new Gpt3)
                 ->davinci()
-                ->temperature(0.7)
-                ->words(80)
-                ->bestOf(3)
-                ->take(3)
+                ->temperature($this->service->gpt3_temperature)
+                ->tokens($this->service->gpt3_tokens)
+                ->bestOf($this->service->gpt3_best_of)
+                ->take($this->service->gpt3_n)
                 ->completion($this->prompt());
 
             $this->responses = array_map(function ($r) {

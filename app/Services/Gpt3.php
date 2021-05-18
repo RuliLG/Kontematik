@@ -58,10 +58,10 @@ class Gpt3 {
         return $this;
     }
 
-    public function words($nWords)
+    public function tokens($nTokens)
     {
-        assert($nWords > 0);
-        $this->maxTokens_ = min(2048, intval(ceil($nWords / 0.75)));
+        assert($nTokens > 0);
+        $this->maxTokens_ = min(2048, $nTokens);
         return $this;
     }
 
