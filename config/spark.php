@@ -120,7 +120,7 @@ return [
         'user' => [
             'model' => User::class,
 
-            'trial_days' => 7,
+            // 'trial_days' => 7,
 
             'default_interval' => 'monthly',
 
@@ -136,6 +136,7 @@ return [
                         'Access to our newest features',
                         '24/7 email support',
                     ],
+                    'trial_days' => 7,
                 ],
             ],
 
