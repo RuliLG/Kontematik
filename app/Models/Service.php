@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     public function category()
     {
-        return $this->belongsTo(ServiceCategory::class);
+        return $this->belongsTo(ServiceCategory::class, 'service_category_id', 'id');
     }
 
     public function fields()
@@ -23,5 +24,40 @@ class Service extends Model
     public function prompts()
     {
         return $this->hasMany(ServicePrompt::class);
+    }
+
+    public function getTagsAttribute()
+    {
+        return array_filter(array_map('trim', explode(',', $this->attributes['tags'])));
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        return [
+            'slug' => $this->slug,
+            'category' => $this->category->name,
+            'category_description' => $this->category->description,
+            'name' => $this->name,
+            'tags' => $this->tags,
+        ];
+        $array = $this->toArray();
+
+        return $array;
+    }
+
+    /**
+     * Modify the query used to retrieve models when making all of the models searchable.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function makeAllSearchableUsing($query)
+    {
+        return $query->with('category');
     }
 }

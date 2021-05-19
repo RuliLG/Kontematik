@@ -10,12 +10,8 @@ class CopyController extends Controller
 {
     public function render()
     {
-        $categories = ServiceCategory::with('services')
-            ->whereHas('services')
-            ->get();
-        return view('copy', [
-            'categories' => $categories,
-        ]);
+
+        return view('copy');
     }
 
     public function renderTool(Service $service)

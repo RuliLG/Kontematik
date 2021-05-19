@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Result;
 use App\Models\Service;
 use App\Services\Gpt3;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -12,7 +14,6 @@ class Copywriter extends Component
     public $service;
     public $data = [];
     public $responses = [];
-    public $loading = false;
 
     public function mount(Service $service)
     {
@@ -39,8 +40,13 @@ class Copywriter extends Component
 
     public function generate()
     {
-        $this->loading = true;
         try {
+            $result = new Result;
+            $result->user_id = Auth::id();
+            $result->service_id = $this->service->id;
+            $result->language_code = 'es'; // TODO
+            $result->prompt = $this->prompt();
+
             $response = (new Gpt3)
                 ->davinci()
                 ->temperature($this->service->gpt3_temperature)
@@ -52,10 +58,10 @@ class Copywriter extends Component
             $this->responses = array_map(function ($r) {
                 return explode("\n", trim($r['text']))[0];
             }, $response);
+            $result->response = json_encode($this->responses);
+            $result->save();
         } catch (\Exception $e) {
         }
-
-        $this->loading = false;
     }
 
     private function prompt()
