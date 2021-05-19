@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Laravel\Scout\Searchable;
 
 class Service extends Model
@@ -59,5 +60,15 @@ class Service extends Model
     protected function makeAllSearchableUsing($query)
     {
         return $query->with('category');
+    }
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return App::environment('production') ? 'services' : 'dev_services';
     }
 }
