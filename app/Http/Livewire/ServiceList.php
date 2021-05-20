@@ -9,6 +9,7 @@ use Livewire\Component;
 class ServiceList extends Component
 {
     public $query = '';
+    public $layout = 'list';
 
     public function render()
     {

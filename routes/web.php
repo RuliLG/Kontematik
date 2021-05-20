@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 header('X-Robots-Tag: noindex, nofollow');
 
 Route::get('/', function () {
-    return view('welcome');
+    return Auth::check() ? redirect(route('dashboard')) : redirect(route('login'));
 });
 
 Route::middleware('auth')->group(function () {

@@ -4,12 +4,16 @@
             @foreach ($this->default_fields as $field)
             <div>
                 <label>{{ $field->label }}</label>
-                <input type="text" wire:model="data.{{$field->name}}" class="block w-full p-4 rounded-lg border border-gray-300" required="{{ $field->is_required ? 'true' : 'false' }}">
+                <input type="text" wire:loading.attr="disabled" wire:target="generate" wire:model="data.{{$field->name}}" class="block w-full p-4 rounded-lg border border-gray-300" required="{{ $field->is_required ? 'true' : 'false' }}">
             </div>
             @endforeach
         </div>
-        <button type="submit" class="block w-full bg-purple-600 p-4 rounded-lg text-white mt-8 hover:bg-purple-500">Generate text</button>
+        <button type="submit" wire:loading.class="hidden" wire:target="generate" class="block w-full bg-purple-600 p-4 rounded-lg text-white mt-8 hover:bg-purple-500">{{ __('Generate text') }}</button>
     </form>
+
+    <div wire:loading wire:target="generate">
+        <x-loading-text></x-loading-text>
+    </div>
 
     @if (!empty($responses))
     <div class="space-y-4 mt-8">
