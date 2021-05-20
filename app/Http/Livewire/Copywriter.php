@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Services\Gpt3;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
 class Copywriter extends Component
@@ -21,7 +22,7 @@ class Copywriter extends Component
         $this->service->load('fields');
         foreach ($this->service->fields as $field) {
             if (!isset($this->data[$field->name])) {
-                $this->data[$field->name] = '';
+                $this->data[$field->name] = Session::get($field->name, '');
             }
         }
     }
@@ -29,6 +30,11 @@ class Copywriter extends Component
     public function render()
     {
         return view('livewire.copywriter');
+    }
+
+    public function updatedData ($value, $key)
+    {
+        Session::put($key, $value);
     }
 
     public function getDefaultFieldsProperty()
