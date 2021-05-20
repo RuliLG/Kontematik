@@ -1,5 +1,5 @@
 <nav>
-    <input type="search" wire:model="query" class="block border-gray-300 rounded mb-8 w-full" placeholder="Search tool">
+    <input type="search" wire:model="query" class="block border-gray-300 rounded mb-8 w-full" placeholder="Search tool" autofocus>
     <div wire:loading.delay="100" class="text-gray-700 font-bold">
         Loading...
     </div>
@@ -32,8 +32,9 @@
                 <li class="p-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
                     <a
                         href="{{ route('tool', ['service' => $s->slug]) }}"
-                        class="text-center block px-4 py-2 rounded-xl bg-{{ $s->tw_color }}-100 text-{{ $s->tw_color }}-800 hover:bg-{{ $s->tw_color }}-50 transition duration-150"
+                        class="text-center block px-4 py-8 rounded-xl bg-{{ $s->tw_color }}-100 text-{{ $s->tw_color }}-800 hover:bg-{{ $s->tw_color }}-50 transition duration-150"
                     >
+                        @svg($s->icon_name, 'h-12 mx-auto mb-4')
                         <span class="font-bold text-sm">{{ $s->name }}</span>
                     </a>
                 </li>
