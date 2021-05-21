@@ -33,4 +33,9 @@ class ServiceList extends Component
             'categories' => $categories,
         ]);
     }
+
+    public function getCountProperty()
+    {
+        return Service::count();
+    }
 }
