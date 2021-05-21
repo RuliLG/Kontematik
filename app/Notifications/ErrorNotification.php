@@ -47,6 +47,7 @@ class ErrorNotification extends Notification implements ShouldQueue
     public function toSlack($notifiable)
     {
         $message = (new SlackMessage)
+                    ->error()
                     ->from('Kontematik')
                     ->content(':rotating_light::rotating_light: An error happened :rotating_light::rotating_light:')
                     ->attachment(function ($attachment) {

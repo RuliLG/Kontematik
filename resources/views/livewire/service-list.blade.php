@@ -24,10 +24,10 @@
         @endif
     </div>
     @elseif ($layout === 'grid')
-    <input type="search" wire:model="query" class="block bg-transparent py-6 px-0 text-lg text-gray-700 border-t-0 border-l-0 border-r-0 border-b-2 border-dashed border-gray-300 rounded-none w-full focus:outline-none focus:ring-0" placeholder="{{ __('Write here to find a tool (e.g. ecommerce)') }}" autofocus>
-    <div wire:loading.delay="100" class="text-gray-400 font-thin text-left text-4xl mt-24">
-        {{ __('Loading...') }}
-    </div>
+        <input type="search" wire:model="query" class="block bg-transparent py-6 px-0 text-lg text-gray-700 border-t-0 border-l-0 border-r-0 border-b-2 border-dashed border-gray-300 rounded-none w-full focus:outline-none focus:ring-0" placeholder="{{ __('Write here to find a tool (e.g. ecommerce)') }}" autofocus>
+        <div wire:loading.delay="100" class="text-gray-400 font-thin text-left text-4xl mt-24">
+            {{ __('Loading...') }}
+        </div>
         @if ($query)
         <div wire:loading.remove class="mt-8">
             @if (!$categories->isEmpty())

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CopyController;
+use App\Http\Controllers\LibraryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,8 +22,9 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [CopyController::class, 'render'])->name('dashboard');
-    Route::get('/dashboard/{service:slug}', [CopyController::class, 'renderTool'])->name('tool');
+    Route::get('/tools', [CopyController::class, 'render'])->name('dashboard');
+    Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->name('tool');
+    Route::get('/library', [LibraryController::class, 'render'])->name('library');
 });
 
 require __DIR__.'/auth.php';

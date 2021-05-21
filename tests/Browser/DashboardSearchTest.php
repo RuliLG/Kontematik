@@ -31,7 +31,7 @@ class DashboardSearchTest extends DuskTestCase
             $services = Service::whereIsEnabled(true)->count();
             $browser
                 ->loginAs(User::find(3))
-                ->visit('/dashboard')
+                ->visit('/tools')
                 ->assertSee($services . ' tools');
         });
     }
@@ -41,7 +41,7 @@ class DashboardSearchTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser
                 ->loginAs(User::find(3))
-                ->visit('/dashboard')
+                ->visit('/tools')
                 ->assertFocused('[type="search"]');
         });
     }
@@ -51,7 +51,7 @@ class DashboardSearchTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser
                 ->loginAs(User::find(3))
-                ->visit('/dashboard')
+                ->visit('/tools')
                 ->type('[type="search"]', 'product')
                 ->waitForText('Loading', 1)
                 ->assertSee('Loading');
@@ -65,7 +65,7 @@ class DashboardSearchTest extends DuskTestCase
             $name = $service->name;
             $browser
                 ->loginAs(User::find(3))
-                ->visit('/dashboard')
+                ->visit('/tools')
                 ->type('[type="search"]', substr($name, 0, 6))
                 ->waitForText($name, 5)
                 ->assertSee($name)
