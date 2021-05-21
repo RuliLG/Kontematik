@@ -3,10 +3,14 @@
 namespace App\Http\Livewire;
 
 use App\Models\Result;
+use App\Models\SavedResult;
 use App\Models\Service;
+use App\Notifications\ErrorNotification;
+use App\Notifications\SavedResult as NotificationsSavedResult;
+use App\Notifications\TextGenerated;
 use App\Services\Gpt3;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
@@ -15,6 +19,8 @@ class Copywriter extends Component
     public $service;
     public $data = [];
     public $responses = [];
+    public $saved = [];
+    public $result = null;
 
     public function mount(Service $service)
     {
@@ -52,6 +58,7 @@ class Copywriter extends Component
             $result->service_id = $this->service->id;
             $result->language_code = 'es'; // TODO
             $result->prompt = $this->prompt();
+            $result->params = json_encode($this->data);
 
             $response = (new Gpt3)
                 ->davinci()
@@ -66,8 +73,48 @@ class Copywriter extends Component
             }, $response);
             $result->response = json_encode($this->responses);
             $result->save();
+
+            $this->result = $result;
+            $this->saved = [];
+
+            Notification::route('slack', config('services.slack.notification'))
+                ->notify(new TextGenerated($result));
         } catch (\Exception $e) {
+            Notification::route('slack', config('services.slack.notification'))
+                ->notify(new ErrorNotification($e, [
+                    'Tool' => $this->service->name,
+                    'Prompt' => $this->prompt(),
+                    'Language' => 'es', // TODO
+                    'UserId' => Auth::id(),
+                ]));
         }
+    }
+
+    public function saveGeneratedText ($text)
+    {
+        if (isset($this->saved[$text])) {
+            SavedResult::where([
+                'service_id' => $this->service->id,
+                'result_id' => $this->result->id,
+                'user_id' => Auth::id(),
+                'output' => $text,
+            ])->delete();
+            unset($this->saved[$text]);
+            return;
+        }
+
+        $saved = new SavedResult;
+        $saved->service_id = $this->service->id;
+        $saved->result_id = $this->result->id;
+        $saved->user_id = Auth::id();
+        $saved->params = is_string($this->result->params) ? $this->result->params : json_encode($this->result->params);
+        $saved->output = $text;
+        $saved->save();
+
+        $this->saved[$text] = true;
+
+        Notification::route('slack', config('services.slack.notification'))
+            ->notify(new NotificationsSavedResult($text, Auth::user(), $this->service));
     }
 
     private function prompt()

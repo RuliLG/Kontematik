@@ -15,7 +15,7 @@ class CreateResultsTable extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('SET NULL');
             $table->foreignId('service_id')->nullable()->constrained()->onDelete('SET NULL');
             $table->enum('language_code', ['es', 'en', 'de', 'fr', 'it']);
             $table->mediumText('prompt');

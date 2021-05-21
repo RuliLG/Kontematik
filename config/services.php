@@ -34,4 +34,8 @@ return [
         'gpt3' => env('GPT3_TOKEN'),
     ],
 
+    'slack' => [
+        'notification' => env('SLACK_WEBHOOK'),
+    ],
+
 ];

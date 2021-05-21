@@ -18,8 +18,15 @@
     @if (!empty($responses))
     <div class="space-y-4 mt-8">
         @foreach ($responses as $response)
-        <div class="bg-purple-50 border border-purple-100 rounded-lg text-purple-800 p-4">
-            {{ $response }}
+        <div class="flex">
+            <div class="bg-purple-50 border border-purple-100 rounded-lg text-purple-800 p-4 w-full">
+                {{ $response }}
+            </div>
+            <div class="flex-shrink-0">
+                <button type="button" wire:click="saveGeneratedText('{{$response}}')" class="p-4 {{ isset($saved[$response]) ? 'text-yellow-600' : 'text-gray-400' }}">
+                    @svg('eos-grade', 'h-6 w-6')
+                </button>
+            </div>
         </div>
         @endforeach
     </div>
