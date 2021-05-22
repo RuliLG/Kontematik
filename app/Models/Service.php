@@ -71,4 +71,14 @@ class Service extends Model
     {
         return App::environment('production') ? 'services' : 'dev_services';
     }
+
+    /**
+     * Determine if the model should be searchable.
+     *
+     * @return bool
+     */
+    public function shouldBeSearchable()
+    {
+        return $this->is_enabled;
+    }
 }
