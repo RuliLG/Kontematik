@@ -79,6 +79,6 @@ class Service extends Model
      */
     public function shouldBeSearchable()
     {
-        return $this->is_enabled;
+        return !!$this->is_enabled;
     }
 }
