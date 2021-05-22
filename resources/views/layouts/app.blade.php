@@ -16,6 +16,9 @@
         @stack('styles')
 
         <!-- Scripts -->
+        <!-- Fathom - beautiful, simple website analytics -->
+        <script src="https://donkey.kontematik.com/script.js" data-site="STOBJFSB" defer></script>
+        <!-- / Fathom -->
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body class="font-sans antialiased">
