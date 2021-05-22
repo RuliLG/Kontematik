@@ -21,6 +21,8 @@
         "tailwindcss": "^2.0.2"
     },
     "dependencies": {
-        "aos": "^2.3.4"
+        "aos": "^2.3.4",
+        "clipboard-copy": "^4.0.1",
+        "tippy.js": "^6.3.1"
     }
 }
