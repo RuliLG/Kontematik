@@ -24,6 +24,7 @@ class SavedResult extends Model
     {
         return array_merge($this->params, [
             'output' => $this->output,
+            'user_id' => $this->user_id,
         ]);
     }
 
