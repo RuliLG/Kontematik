@@ -35,3 +35,7 @@ window.updateTooltip = function (button, delay) {
         }, 1000);
     }
 }
+
+window.trackGoal = function (goalId) {
+    window.fathom.trackGoal(goalId, 0);
+};

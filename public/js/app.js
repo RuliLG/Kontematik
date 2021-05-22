@@ -6895,6 +6895,10 @@ window.updateTooltip = function (button, delay) {
   }
 };
 
+window.trackGoal = function (goalId) {
+  window.fathom.trackGoal(goalId, 0);
+};
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":

@@ -1,5 +1,5 @@
 <div class="tooltip-parent">
-    <form wire:submit.prevent="generate">
+    <form wire:submit.prevent="generate" onsubmit="trackGoal('DIIAOO6H')">
         <div class="space-y-4">
             @foreach ($this->default_fields as $field)
             <div>
