@@ -119,7 +119,7 @@ class Copywriter extends Component
 
     private function prompt()
     {
-        $prompt = $this->service->prompts[0]->raw_prompt;
+        $prompt = trim($this->service->prompts[0]->raw_prompt);
         foreach ($this->data as $key => $value) {
             $prompt = str_replace('{' . $key . '}', $value, $prompt);
         }
