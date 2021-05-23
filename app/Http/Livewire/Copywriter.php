@@ -24,6 +24,7 @@ class Copywriter extends Component
     public $saved = [];
     public $result = null;
     public $indexable = true;
+    public $rating = 0;
 
     public function mount(Service $service)
     {
@@ -79,6 +80,7 @@ class Copywriter extends Component
 
             $this->result = $result;
             $this->indexable = $result->is_indexable;
+            $this->rating = intval($this->result->rating);
             $this->saved = [];
 
             Notification::route('slack', config('services.slack.notification'))
@@ -133,6 +135,14 @@ class Copywriter extends Component
     {
         (new Webflow)->toggleIndexation($this->result);
         $this->indexable = $this->result->is_indexable;
+    }
+
+    public function rate ($rating)
+    {
+        $rating = min(5, max(1, $rating));
+        $this->result->rating = $rating;
+        $this->result->save();
+        $this->rating = $this->result->rating;
     }
 
     private function prompt()
