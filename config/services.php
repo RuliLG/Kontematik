@@ -38,4 +38,8 @@ return [
         'notification' => env('SLACK_WEBHOOK'),
     ],
 
+    'webflow' => [
+        'token' => env('WEBFLOW_TOKEN'),
+    ],
+
 ];

@@ -23,4 +23,18 @@ class Result extends Model
     {
         return json_decode($this->attributes['response'], true);
     }
+
+    public function getParamsAttribute()
+    {
+        return json_decode($this->attributes['params'], true);
+    }
+
+    public function getWebflowUrlAttribute()
+    {
+        if (!$this->webflow_share_uuid) {
+            return null;
+        }
+
+        return 'https://www.kontematik.com/ai-copywriting/' . $this->webflow_share_uuid;
+    }
 }

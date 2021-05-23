@@ -36,5 +36,28 @@
         </li>
         @endforeach
     </ul>
+
+        @if (!$result->webflow_share_uuid)
+        <div class="text-center mt-8">
+            <button wire:loading.remove wire:target="share" type="button" wire:click="share" onclick="trackGoal('GXJK4T5S')" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg hover:bg-lightBlue-600 md:w-auto focus:outline-none">
+                @svg('eos-ios-share', 'w-6 h-6 mr-4')
+                Share
+            </button>
+            <div wire:loading wire:target="share" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg md:w-auto">
+                @svg('eos-ios-share', 'w-6 h-6 mr-4')
+                Generating sharing link...
+            </div>
+        </div>
+        @else
+        <div class="mt-8">
+            <div class="border-dashed border-gray-300 border-2 rounded-lg p-8 text-lightBlue-700 text-base font-bold text-center" data-tooltip="{{ __('Click to copy') }}" data-action-tooltip="{{ __('Copied!') }}" onclick="copy('share-url', this)">
+                <span class="text-xl text-gray-900">{{ __('Share this URL with your team') }}</span>
+                <span id="share-url" class="mt-4">{{ $result->webflow_url }}</span>
+            </div>
+            <label wire:click="toggleIndexation" class="block mt-4 text-center">
+                <input type="checkbox" class="h-6 w-6 text-lightBlue-700" {{ $indexable ? '' : 'checked' }}> {{ __('I do not want this URL to be indexed on Google') }}
+            </label>
+        </div>
+        @endif
     @endif
 </div>

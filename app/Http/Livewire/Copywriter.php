@@ -9,6 +9,8 @@ use App\Notifications\ErrorNotification;
 use App\Notifications\SavedResult as NotificationsSavedResult;
 use App\Notifications\TextGenerated;
 use App\Services\Gpt3;
+use App\Services\Webflow;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
@@ -21,6 +23,7 @@ class Copywriter extends Component
     public $responses = [];
     public $saved = [];
     public $result = null;
+    public $indexable = true;
 
     public function mount(Service $service)
     {
@@ -75,6 +78,7 @@ class Copywriter extends Component
             $result->save();
 
             $this->result = $result;
+            $this->indexable = $result->is_indexable;
             $this->saved = [];
 
             Notification::route('slack', config('services.slack.notification'))
@@ -115,6 +119,20 @@ class Copywriter extends Component
 
         Notification::route('slack', config('services.slack.notification'))
             ->notify(new NotificationsSavedResult($text, Auth::user(), $this->service));
+    }
+
+    public function share()
+    {
+        if (!$this->result->webflow_share_uuid) {
+            $this->result->webflow_share_uuid = Str::uuid();
+            (new Webflow)->publish($this->result);
+        }
+    }
+
+    public function toggleIndexation()
+    {
+        (new Webflow)->toggleIndexation($this->result);
+        $this->indexable = $this->result->is_indexable;
     }
 
     private function prompt()
