@@ -87,6 +87,7 @@ class Gpt3 {
                 'presence_penalty' => $this->presencePenalty_,
                 'frequency_penalty' => $this->freqPenalty_,
                 'best_of' => $this->bestOf_,
+                'stop' => "\n",
             ]);
 
         $response->throw();
