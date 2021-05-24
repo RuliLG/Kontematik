@@ -9,6 +9,7 @@ use App\Notifications\ErrorNotification;
 use App\Notifications\SavedResult as NotificationsSavedResult;
 use App\Notifications\TextGenerated;
 use App\Services\Gpt3;
+use App\Services\Intelligence;
 use App\Services\Webflow;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -25,16 +26,35 @@ class Copywriter extends Component
     public $result = null;
     public $indexable = true;
     public $rating = 0;
+    public $languages = [];
+    public $language = 'es';
+    public $languageMap = [
+        'es' => 'Spanish',
+        'en' => 'English',
+        'de' => 'German',
+        'it' => 'Italian',
+        'fr' => 'French',
+    ];
 
     public function mount(Service $service)
     {
         $this->service = $service;
-        $this->service->load('fields');
+        $this->service->load('fields', 'prompts');
         foreach ($this->service->fields as $field) {
             if (!isset($this->data[$field->name])) {
                 $this->data[$field->name] = Session::get($field->name, '');
             }
         }
+
+        $this->languages = $this->service->prompts->map(function ($prompt) {
+            $lang = isset($this->languageMap[$prompt->language_code]) ? $prompt->language_code : $this->language;
+            return [
+                'code' => $lang,
+                'name' => country_flag($lang) . ' ' . $this->languageMap[$lang],
+            ];
+        })
+            ->sortBy('name')
+            ->toArray();
     }
 
     public function render()
@@ -60,7 +80,7 @@ class Copywriter extends Component
             $result = new Result;
             $result->user_id = Auth::id();
             $result->service_id = $this->service->id;
-            $result->language_code = 'es'; // TODO
+            $result->language_code = $this->language;
             $result->prompt = $this->prompt();
             $result->params = json_encode($this->data);
 
@@ -90,7 +110,7 @@ class Copywriter extends Component
                 ->notify(new ErrorNotification($e, [
                     'Tool' => $this->service->name,
                     'Prompt' => $this->prompt(),
-                    'Language' => 'es', // TODO
+                    'Language' => $this->language,
                     'UserId' => Auth::id(),
                 ]));
         }
@@ -147,7 +167,11 @@ class Copywriter extends Component
 
     private function prompt()
     {
-        $prompt = trim($this->service->prompts[0]->raw_prompt);
+        $prompt = $this->service->prompts->filter(function ($prompt) {
+            return $prompt->language_code === $this->language;
+        })->values();
+        $prompt = empty($prompt) ? $this->service->prompts[0] : $prompt[0];
+        $prompt = trim($prompt->raw_prompt);
         foreach ($this->data as $key => $value) {
             $prompt = str_replace('{' . $key . '}', $value, $prompt);
         }

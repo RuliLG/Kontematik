@@ -1,12 +1,30 @@
 <div class="tooltip-parent">
-    <form wire:submit.prevent="generate" onsubmit="trackGoal('DIIAOO6H')">
+    <form wire:submit.prevent="generate" onsubmit="trackGoal('DIIAOO6H')" id="copy-form" x-data="alpineLanguageSelector('{{ $language }}')">
         <div class="space-y-4">
             @foreach ($this->default_fields as $field)
             <div>
-                <label>{{ $field->label }}</label>
-                <input type="text" wire:loading.attr="disabled" wire:target="generate" wire:model="data.{{$field->name}}" class="block w-full p-4 rounded-lg border border-gray-300" required="{{ $field->is_required ? 'true' : 'false' }}">
+                <label class="block font-bold text-gray-500">{{ $field->label }}</label>
+                <input
+                    type="text"
+                    wire:loading.attr="disabled"
+                    wire:target="generate"
+                    wire:model.debounce.250="data.{{ $field->name }}"
+                    class="block w-full p-4 rounded-lg border border-gray-300"
+                    required="{{ $field->is_required ? 'true' : 'false' }}"
+                    x-on:change="detectLanguage"
+                >
             </div>
             @endforeach
+        </div>
+        <div class="flex justify-start">
+            <label class="inline-flex items-center justify-start font-bold text-gray-500 mt-4">
+                Writing in
+                <select wire:model="language" class="ml-4 block rounded-lg border-none" wire:loading.attr="disabled" wire:target="generate" id="language-select">
+                    @foreach ($languages as $lang)
+                    <option value="{{ $lang['code'] }}">{{ $lang['name'] }}</option>
+                    @endforeach
+                </select>
+            </label>
         </div>
         <button type="submit" wire:loading.class="hidden" wire:target="generate" class="block w-full bg-purple-600 p-4 rounded-lg text-white mt-8 hover:bg-purple-500">{{ __('Generate text') }}</button>
     </form>

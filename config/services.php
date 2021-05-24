@@ -42,4 +42,8 @@ return [
         'token' => env('WEBFLOW_TOKEN'),
     ],
 
+    'silver-diamond' => [
+        'token' => env('SILVERDIAMOND_TOKEN'),
+    ],
+
 ];
