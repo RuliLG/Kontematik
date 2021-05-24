@@ -87,10 +87,19 @@ class Gpt3 {
                 'presence_penalty' => $this->presencePenalty_,
                 'frequency_penalty' => $this->freqPenalty_,
                 'best_of' => $this->bestOf_,
-                'stop' => "\n",
+                'stop' => $this->getStopWord($prompt),
             ]);
 
         $response->throw();
         return $response->json()['choices'];
+    }
+
+    private function getStopWord($prompt)
+    {
+        if (strpos($prompt, '###') !== false) {
+            return '###';
+        }
+
+        return "\n";
     }
 }
