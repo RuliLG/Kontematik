@@ -93,7 +93,7 @@ class Copywriter extends Component
                 ->completion($this->prompt());
 
             $this->responses = array_map(function ($r) {
-                return explode("\n", trim($r['text']))[0];
+                return trim($r['text']);
             }, $response);
             $result->response = json_encode($this->responses);
             $result->save();
