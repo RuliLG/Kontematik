@@ -4,6 +4,17 @@
             @foreach ($this->default_fields as $field)
             <div>
                 <label class="block font-bold text-gray-500">{{ $field->label }}</label>
+                @if ($field->type === 'textarea')
+                <textarea
+                    type="text"
+                    wire:loading.attr="disabled"
+                    wire:target="generate"
+                    wire:model.debounce.250="data.{{ $field->name }}"
+                    class="block w-full p-4 rounded-lg border border-gray-300"
+                    required="{{ $field->is_required ? 'true' : 'false' }}"
+                    x-on:change="detectLanguage"
+                ></textarea>
+                @else
                 <input
                     type="text"
                     wire:loading.attr="disabled"
@@ -13,6 +24,7 @@
                     required="{{ $field->is_required ? 'true' : 'false' }}"
                     x-on:change="detectLanguage"
                 >
+                @endif
             </div>
             @endforeach
         </div>

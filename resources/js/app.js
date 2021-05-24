@@ -61,7 +61,8 @@ window.alpineLanguageSelector = function (initialLanguage) {
                     const options = Array.prototype.slice.call(select.querySelectorAll('option'));
                     options.forEach(function (option) {
                         if (language && language === option.value) {
-                            option.click();
+                            select.value = language;
+                            select.dispatchEvent(new Event('change'));
                             return false;
                         }
                     })
