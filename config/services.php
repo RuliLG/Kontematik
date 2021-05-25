@@ -46,4 +46,9 @@ return [
         'token' => env('SILVERDIAMOND_TOKEN'),
     ],
 
+    'unsplash' => [
+        'access-key' => env('UNSPLASH_ACCESS_KEY'),
+        'secret-key' => env('UNSPLASH_SECRET_KEY'),
+    ],
+
 ];

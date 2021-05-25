@@ -1,6 +1,6 @@
 <nav>
     @if ($layout === 'list')
-    <input type="search" wire:model="query" class="block border-gray-300 rounded mb-8 w-full" placeholder="Search tool" autofocus>
+    <input type="search" wire:model="query" class="block border-gray-300 rounded mb-8 w-full" placeholder="Search tool">
     <div wire:loading.delay="100" class="text-gray-700 font-bold">
         {{ __('Loading...') }}
     </div>

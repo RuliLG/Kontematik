@@ -6,10 +6,12 @@ use App\Models\Result;
 use App\Models\ServiceField;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Webflow {
     public function publish (Result $result)
     {
+        $image = $this->getImage($result);
         $ids = [];
         foreach ($result->response as $response) {
             $uuid = Str::uuid();
@@ -35,6 +37,10 @@ class Webflow {
             '_draft' => false,
             'outputs' => $ids,
             'robots' => 'index',
+            'image' => $image ? $image['urls']['full'] : null,
+            'image-author' => $image ? $image['user']['name'] : null,
+            'image-raw-url-2' => $image ? $image['urls']['raw'] : null,
+            'image-alt-text' => $image ? $image['description'] : null,
         ];
 
         $i = 1;
@@ -52,6 +58,10 @@ class Webflow {
         $response = $this->http()->post('https://api.webflow.com/collections/60a90f28de611b70276d3115/items?live=true', [
             'fields' => $fields,
         ]);
+
+        if (!$response->ok()) {
+            Log::error($response->json());
+        }
 
         $response->throw();
         $response = $response->json();
@@ -84,5 +94,31 @@ class Webflow {
             'Authorization' => 'Bearer ' . config('services.webflow.token'),
             'Accept-Version' => '1.0.0',
         ]);
+    }
+
+    private function getImage(Result $result)
+    {
+        $unsplash = new Unsplash;
+        $keywords = [];
+
+        $texts = [$result->params, $result->response];
+        foreach ($texts as $text) {
+            $text = join("\n", $text);
+            $textRankKeywords = (new Intelligence)->getKeywords($text);
+            if (empty($textRankKeywords)) {
+                continue;
+            }
+
+            $keywords = array_merge($keywords, $textRankKeywords);
+        }
+
+        foreach ($keywords as $keyword) {
+            $images = $unsplash->search($keyword, $result->language_code);
+            if ($images) {
+                return $images[0];
+            }
+        }
+
+        return null;
     }
 }
