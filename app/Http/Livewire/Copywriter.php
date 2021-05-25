@@ -46,6 +46,7 @@ class Copywriter extends Component
             }
         }
 
+        $this->language = Session::get('prompt_language', 'es');
         $this->languages = $this->service->prompts->map(function ($prompt) {
             $lang = isset($this->languageMap[$prompt->language_code]) ? $prompt->language_code : $this->language;
             return [
@@ -65,6 +66,11 @@ class Copywriter extends Component
     public function updatedData ($value, $key)
     {
         Session::put($key, $value);
+    }
+
+    public function updatedLanguage ($value)
+    {
+        Session::put('prompt_language', $value);
     }
 
     public function getDefaultFieldsProperty()
