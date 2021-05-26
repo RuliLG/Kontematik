@@ -24,6 +24,7 @@ class ServiceList extends Component
                     $query->whereIn('id', empty($serviceIds) ? [-1] : $serviceIds);
                 }
             ])
+            ->orderBy('order', 'ASC')
             ->get()
             ->filter(function ($category) {
                 return !$category->services->isEmpty();
