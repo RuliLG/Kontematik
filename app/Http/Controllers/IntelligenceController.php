@@ -10,15 +10,11 @@ class IntelligenceController extends Controller
     public function detectLanguage (Request $request)
     {
         $request->validate([
-            'text' => 'required|string'
+            'text' => 'required|string|min:5'
         ]);
-        $text = $request->get('text', '');
-        if (strlen($text) < 30) {
-            return;
-        }
 
         return response()->json([
-            'language' => (new Intelligence())->detectLanguage($text),
+            'language' => (new Intelligence())->detectLanguage($request->get('text')),
         ]);
     }
 }

@@ -55,7 +55,7 @@ window.alpineLanguageSelector = function (initialLanguage) {
                 .map(input => input.value || input.textContent || '')
                 .filter(value => value.length > 0)
                 .join('\n');
-            window.axios.post('/api/v1/ai/language-detection', { text: text})
+            window.axios.post('/api/v1/ai/language-detection', { text: text })
                 .then(response => {
                     const language = response.data.language;
                     const options = Array.prototype.slice.call(select.querySelectorAll('option'));
