@@ -10,9 +10,11 @@ use App\Notifications\SavedResult as NotificationsSavedResult;
 use App\Notifications\TextGenerated;
 use App\Services\Gpt3;
 use App\Services\Intelligence;
+use App\Services\Tokenizer;
 use App\Services\Webflow;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -27,7 +29,7 @@ class Copywriter extends Component
     public $indexable = true;
     public $rating = 0;
     public $languages = [];
-    public $language = 'es';
+    public $language = 'auto';
     public $languageMap = [
         'es' => 'Spanish',
         'en' => 'English',
@@ -35,6 +37,8 @@ class Copywriter extends Component
         'it' => 'Italian',
         'fr' => 'French',
     ];
+
+    private $language_ = null;
 
     public function mount(Service $service)
     {
@@ -46,12 +50,12 @@ class Copywriter extends Component
             }
         }
 
-        $this->language = Session::get('prompt_language', 'es');
+        $this->language = Session::get('prompt_language', 'auto');
         $this->languages = $this->service->prompts->map(function ($prompt) {
             $lang = isset($this->languageMap[$prompt->language_code]) ? $prompt->language_code : $this->language;
             return [
                 'code' => $lang,
-                'name' => country_flag($lang) . ' ' . $this->languageMap[$lang],
+                'name' => country_flag(mb_strtoupper($lang)) . ' ' . $this->languageMap[$lang],
             ];
         })
             ->sortBy('name')
@@ -82,13 +86,36 @@ class Copywriter extends Component
 
     public function generate()
     {
+        if (!Gate::allows('can-generate')) {
+            $this->addError('limit_reached', true);
+            return;
+        }
+
+        if ($this->language === 'auto') {
+            $text = join("\n", array_values($this->data));
+            $lang = (new Intelligence())->detectLanguage($text);
+            $langDoesNotExist = $this->service->prompts->filter(function ($prompt) use ($lang) {
+                return $lang === $prompt->language_code;
+            })->isEmpty();
+
+            if ($langDoesNotExist) {
+                $lang = $this->service->prompts[0]->language_code;
+            }
+
+            $this->language_ = $lang;
+        } else {
+            $this->language_ = $this->language;
+        }
+
         try {
             $result = new Result;
             $result->user_id = Auth::id();
             $result->service_id = $this->service->id;
-            $result->language_code = $this->language;
+            $result->language_code = $this->language_;
             $result->prompt = $this->prompt();
             $result->params = json_encode($this->data);
+            $result->user_tokens = Tokenizer::count(join('', array_values($this->data)));
+            $result->total_tokens = Tokenizer::count($result->prompt);
 
             $response = (new Gpt3)
                 ->davinci()
@@ -116,7 +143,7 @@ class Copywriter extends Component
                 ->notify(new ErrorNotification($e, [
                     'Tool' => $this->service->name,
                     'Prompt' => $this->prompt(),
-                    'Language' => $this->language,
+                    'Language' => $this->language_,
                     'UserId' => Auth::id(),
                 ]));
         }
@@ -174,7 +201,7 @@ class Copywriter extends Component
     private function prompt()
     {
         $prompt = $this->service->prompts->filter(function ($prompt) {
-            return $prompt->language_code === $this->language;
+            return $prompt->language_code === $this->language_;
         })->values();
         $prompt = empty($prompt) ? $this->service->prompts[0] : $prompt[0];
         $prompt = trim($prompt->raw_prompt);

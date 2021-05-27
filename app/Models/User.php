@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\TextGenerationPolicy;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -51,5 +52,33 @@ class User extends Authenticatable
                 $user->api_token = Str::random(80);
             }
         });
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
+
+    public function monthly_results()
+    {
+        return $this->results()
+            ->where('created_at', '>=', now()->setDay(1)->setHour(0)->setMinute(0)->setSecond(0));
+    }
+
+    public function getMonthlyTokensAttribute()
+    {
+        return Result::where('user_id', $this->id)
+            ->where('created_at', '>=', now()->setDay(1)->setHour(0)->setMinute(0)->setSecond(0))
+            ->sum('user_tokens');
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function getTrialDaysLeftAttribute()
+    {
+        return max(0, TextGenerationPolicy::MAX_FREE_DAYS - now()->diffInDays($this->email_verified_at));
     }
 }

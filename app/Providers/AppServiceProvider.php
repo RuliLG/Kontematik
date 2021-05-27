@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Policies\TextGenerationPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+
+        Gate::define('can-generate', [TextGenerationPolicy::class, 'generate']);
     }
 }

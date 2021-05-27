@@ -137,6 +137,7 @@ return [
                         '24/7 email support',
                     ],
                     'trial_days' => 7,
+                    'tokens' => 100000,
                 ],
             ],
 

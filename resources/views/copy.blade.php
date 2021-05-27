@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout bg="bg-gray-100">
     <x-slot name="header">
         <div class="text-xl text-lightBlue-100 leading-tight">
             @if (isset($service))

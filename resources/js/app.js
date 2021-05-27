@@ -39,34 +39,3 @@ window.updateTooltip = function (button, delay) {
 window.trackGoal = function (goalId) {
     window.fathom.trackGoal(goalId, 0);
 };
-
-window.alpineLanguageSelector = function (initialLanguage) {
-    return {
-        language: initialLanguage,
-        detectLanguage: function () {
-            const form = document.getElementById('copy-form');
-            const select = document.getElementById('language-select');
-            if (!select) {
-                return;
-            }
-
-            const inputs = Array.prototype.slice.call(form.querySelectorAll('input, textarea'));
-            const text = inputs
-                .map(input => input.value || input.textContent || '')
-                .filter(value => value.length > 0)
-                .join('\n');
-            window.axios.post('/api/v1/ai/language-detection', { text: text })
-                .then(response => {
-                    const language = response.data.language;
-                    const options = Array.prototype.slice.call(select.querySelectorAll('option'));
-                    options.forEach(function (option) {
-                        if (language && language === option.value) {
-                            select.value = language;
-                            select.dispatchEvent(new Event('change'));
-                            return false;
-                        }
-                    })
-                })
-        }
-    }
-}

@@ -17,6 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->group(function () {
     Route::prefix('v1')->group(function () {
-        Route::post('/ai/language-detection', [IntelligenceController::class, 'detectLanguage']);
+        // Route::post('/ai/language-detection', [IntelligenceController::class, 'detectLanguage']);
     });
 });
