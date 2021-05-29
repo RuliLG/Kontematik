@@ -20,7 +20,8 @@
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.4",
         "silver-diamond/silver-diamond": "^1.5",
-        "stidges/laravel-country-flags": "^2.0"
+        "stidges/laravel-country-flags": "^2.0",
+        "laravel/telescope": "^4.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
@@ -29,7 +30,6 @@
         "laravel/breeze": "^1.1",
         "laravel/dusk": "^6.15",
         "laravel/sail": "^1.0.1",
-        "laravel/telescope": "^4.4",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.3.3"
@@ -61,7 +61,6 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "laravel/telescope"
             ]
         }
     },
