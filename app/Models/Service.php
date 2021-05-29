@@ -46,9 +46,6 @@ class Service extends Model
             'name' => $this->name,
             'tags' => $this->tags,
         ];
-        $array = $this->toArray();
-
-        return $array;
     }
 
     /**
@@ -79,6 +76,6 @@ class Service extends Model
      */
     public function shouldBeSearchable()
     {
-        return !!$this->is_enabled;
+        return $this->is_enabled === 1;
     }
 }
