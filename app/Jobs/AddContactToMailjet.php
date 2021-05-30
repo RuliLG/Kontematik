@@ -34,10 +34,14 @@ class AddContactToMailjet implements ShouldQueue
      */
     public function handle()
     {
-        Mailjet::createContact([
-            'Name' => $this->user->name,
-            'Email' => $this->user->email,
-            'IsExcludedFromCampaigns' => !$this->user->notify_new_tools && !$this->user->notify_new_products,
-        ]);
+        try {
+            Mailjet::createContact([
+                'Name' => $this->user->name,
+                'Email' => $this->user->email,
+                'IsExcludedFromCampaigns' => !$this->user->notify_new_tools && !$this->user->notify_new_products,
+            ]);
+        } catch (\Exception $e) {
+
+        }
     }
 }
