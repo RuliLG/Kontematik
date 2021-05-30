@@ -1,0 +1,154 @@
+<div class="min-h-screen bg-gray-100">
+    <div class="py-10">
+        <!-- Page header -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
+            <div class="flex items-center space-x-5">
+                <div class="flex-shrink-0">
+                    <div class="relative">
+                        <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80" alt="">
+                        <span class="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span>
+                    </div>
+                </div>
+                <div>
+                    <input class="text-2xl font-bold text-gray-900 bg-gray-200 rounded-lg p-3 focus:outline-none" wire:model="service.name" placeholder="Service name" {{ $service->id ? '' : 'autofocus' }} />
+                </div>
+            </div>
+            <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
+                <a href="{{ route('admin') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                    Go back
+                </a>
+                <button wire:click="save" type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                    Save
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl">
+            <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+                <!-- Description list-->
+                <section aria-labelledby="applicant-information-title">
+                    <div class="bg-white shadow sm:rounded-lg">
+                        <div class="px-4 py-5 sm:px-6">
+                            <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">
+                                Service Information
+                            </h2>
+                        </div>
+                        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                            <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                                <div class="sm:col-span-1">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Slug
+                                    </dt>
+                                    <dd class="mt-1 text-sm text-gray-900">
+                                        <input type="text" class="bg-white border border-gray-200 rounded" wire:model="service.slug" placeholder="example-slug">
+                                    </dd>
+                                </div>
+                                <div class="sm:col-span-1">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Order inside category
+                                    </dt>
+                                    <dd class="mt-1 text-sm text-gray-900">
+                                        <input type="number" min="0" max="1000" class="bg-white border border-gray-200 rounded" wire:model="service.order">
+                                    </dd>
+                                </div>
+                                <div class="sm:col-span-1">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Color: {{ $service->tw_color }}
+                                    </dt>
+                                    <dd class="mt-1 flex flex-wrap">
+                                        <div class="p-1"><div wire:click="setColor('blueGray')" class="block h-6 w-6 rounded bg-blueGray-600 {{ $service->tw_color === 'blueGray' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('coolGray')" class="block h-6 w-6 rounded bg-coolGray-600 {{ $service->tw_color === 'coolGray' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('gray')" class="block h-6 w-6 rounded bg-gray-600 {{ $service->tw_color === 'gray' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('trueGray')" class="block h-6 w-6 rounded bg-trueGray-600 {{ $service->tw_color === 'trueGray' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('warmGray')" class="block h-6 w-6 rounded bg-warmGray-600 {{ $service->tw_color === 'warmGray' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('red')" class="block h-6 w-6 rounded bg-red-600 {{ $service->tw_color === 'red' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('orange')" class="block h-6 w-6 rounded bg-orange-600 {{ $service->tw_color === 'orange' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('amber')" class="block h-6 w-6 rounded bg-amber-600 {{ $service->tw_color === 'amber' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('yellow')" class="block h-6 w-6 rounded bg-yellow-600 {{ $service->tw_color === 'yellow' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('lime')" class="block h-6 w-6 rounded bg-lime-600 {{ $service->tw_color === 'lime' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('green')" class="block h-6 w-6 rounded bg-green-600 {{ $service->tw_color === 'green' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('emerald')" class="block h-6 w-6 rounded bg-emerald-600 {{ $service->tw_color === 'emerald' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('teal')" class="block h-6 w-6 rounded bg-teal-600 {{ $service->tw_color === 'teal' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('cyan')" class="block h-6 w-6 rounded bg-cyan-600 {{ $service->tw_color === 'cyan' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('lightBlue')" class="block h-6 w-6 rounded bg-lightBlue-600 {{ $service->tw_color === 'lightBlue' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('blue')" class="block h-6 w-6 rounded bg-blue-600 {{ $service->tw_color === 'blue' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('indigo')" class="block h-6 w-6 rounded bg-indigo-600 {{ $service->tw_color === 'indigo' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('violet')" class="block h-6 w-6 rounded bg-violet-600 {{ $service->tw_color === 'violet' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('purple')" class="block h-6 w-6 rounded bg-purple-600 {{ $service->tw_color === 'purple' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('fuchsia')" class="block h-6 w-6 rounded bg-fuchsia-600 {{ $service->tw_color === 'fuchsia' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('pink')" class="block h-6 w-6 rounded bg-pink-600 {{ $service->tw_color === 'pink' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                        <div class="p-1"><div wire:click="setColor('rose')" class="block h-6 w-6 rounded bg-rose-600 {{ $service->tw_color === 'rose' ? '' : 'opacity-50 hover:opacity-100' }}"></div></div>
+                                    </dd>
+                                </div>
+                                <div class="sm:col-span-1">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Icon
+                                    </dt>
+                                    <dd class="mt-1 text-sm text-gray-900">
+                                        <select wire:model="service.icon_name">
+                                            @foreach ($icons as $icon)
+                                            <option value="{{ $icon }}">{{ $icon }}</option>
+                                            @endforeach
+                                        </select>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Comments-->
+                <section aria-labelledby="notes-title">
+                    <div class="bg-white shadow sm:rounded-lg sm:overflow-hidden">
+                        <div class="divide-y divide-gray-200">
+                            <div class="px-4 py-5 sm:px-6">
+                                <h2 id="notes-title" class="text-lg font-medium text-gray-900">GPT3 Configuration</h2>
+                            </div>
+                            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">
+                                            Temperature
+                                            <small class="block text-xs text-gray-500">How <em>creative</em> the model will try to be. The closer to 1, the more creative.</small>
+                                        </dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            <input type="text" class="bg-white border border-gray-200 rounded" wire:model="service.gpt3_temperature" placeholder="0.75">
+                                        </dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">
+                                            Tokens
+                                            <small class="block text-xs text-gray-500">Maximum tokens between input prompt and each output. 1 token = 4 characters.</small>
+                                        </dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            <input type="number" min="16" max="2048" class="bg-white border border-gray-200 rounded w-48" wire:model="service.gpt3_tokens">
+                                            <small class="block text-xs text-gray-500">{{ $service->gpt3_tokens * 4 }} characters.</small>
+                                        </dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">
+                                            Best of
+                                            <small class="block text-xs text-gray-500">How many outputs will the model generate.</small>
+                                        </dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            <input type="number" min="1" max="20" class="bg-white border border-gray-200 rounded w-48" wire:model="service.gpt3_best_of">
+                                        </dd>
+                                    </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">
+                                            N
+                                            <small class="block text-xs text-gray-500">How many outputs will the model select (it has to be, at most, the same number of best_of).</small>
+                                        </dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            <input type="number" min="1" max="20" class="bg-white border border-gray-200 rounded w-48" wire:model="service.gpt3_n">
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
