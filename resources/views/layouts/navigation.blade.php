@@ -50,6 +50,9 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link href="{{ route('profile') }}">
+                            {{ __('My account') }}
+                        </x-dropdown-link>
                         <x-dropdown-link href="/billing">
                             {{ __('Billing') }}
                         </x-dropdown-link>
@@ -106,6 +109,9 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <x-responsive-nav-link href="{{ route('profile') }}">
+                    {{ __('My account') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link href="/billing">
                     {{ __('Billing') }}
                 </x-responsive-nav-link>

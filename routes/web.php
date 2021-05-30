@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CopyController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,8 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/tools', [CopyController::class, 'render'])->name('dashboard');
     Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->name('tool');
+    Route::get('/account', [ProfileController::class, 'render'])->name('profile');
+    Route::get('/account/password', [ProfileController::class, 'renderPassword'])->name('profile.password');
     Route::get('/library', [LibraryController::class, 'render'])->name('library');
 });
 
