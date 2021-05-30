@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Jobs\AddContactToMailjet;
+use App\Jobs\CheckMailjetContact;
+use App\Jobs\UpdateMailjetContact;
 use App\Policies\TextGenerationPolicy;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,6 +55,22 @@ class User extends Authenticatable
         static::creating(function ($user) {
             if (!$user->api_token) {
                 $user->api_token = Str::random(80);
+            }
+        });
+
+        static::created(function ($user) {
+            dispatch(new CheckMailjetContact($user));
+        });
+
+        static::deleting(function ($user) {
+            dispatch(new UpdateMailjetContact(null, $user->email, true));
+        });
+
+        static::updated(function ($user) {
+            if ($user->mailjet_id) {
+                dispatch(new UpdateMailjetContact($user));
+            } else {
+                dispatch(new CheckMailjetContact($user));
             }
         });
     }

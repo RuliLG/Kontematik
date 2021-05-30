@@ -51,4 +51,9 @@ return [
         'secret-key' => env('UNSPLASH_SECRET_KEY'),
     ],
 
+    'mailjet' => [
+        'key' => env('MAILJET_APIKEY'),
+        'secret' => env('MAILJET_APISECRET'),
+    ]
+
 ];
