@@ -22,7 +22,7 @@ Route::get('/', function () {
     return Auth::check() ? redirect(route('dashboard')) : redirect(route('login'));
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::get('/tools', [CopyController::class, 'render'])->name('dashboard');
     Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->name('tool');
     Route::get('/account', [ProfileController::class, 'render'])->name('profile');

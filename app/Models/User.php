@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Jobs\AddContactToMailjet;
 use App\Jobs\CheckMailjetContact;
 use App\Jobs\UpdateMailjetContact;
 use App\Policies\TextGenerationPolicy;
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Spark\Billable;
 use Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Billable, HasFactory, Notifiable;
 
