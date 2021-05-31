@@ -24,7 +24,7 @@ Route::get('/', function () {
 
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/tools', [CopyController::class, 'render'])->name('dashboard');
-    Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->name('tool');
+    Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->middleware('service-enabled')->name('tool');
     Route::get('/account', [ProfileController::class, 'render'])->name('profile');
     Route::get('/account/password', [ProfileController::class, 'renderPassword'])->name('profile.password');
     Route::get('/library', [LibraryController::class, 'render'])->name('library');
