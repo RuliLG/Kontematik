@@ -86,6 +86,9 @@ class Copywriter extends Component
 
     public function generate()
     {
+        $this->responses = [];
+        $this->result = null;
+
         if (!Gate::allows('can-generate')) {
             $this->addError('limit_reached', true);
             return;
@@ -107,13 +110,22 @@ class Copywriter extends Component
             $this->language_ = $this->language;
         }
 
+        $result = new Result;
+        $result->user_id = Auth::id();
+        $result->service_id = $this->service->id;
+        $result->language_code = $this->language_;
+        $result->prompt = $this->prompt();
+        $result->params = json_encode($this->data);
+
+        // Validate prompt against OpenAI
+        if (!$this->promptIsValid()) {
+            $result->is_nsfw = true;
+            $result->save();
+            $this->addError('unsafe_prompt', true);
+            return;
+        }
+
         try {
-            $result = new Result;
-            $result->user_id = Auth::id();
-            $result->service_id = $this->service->id;
-            $result->language_code = $this->language_;
-            $result->prompt = $this->prompt();
-            $result->params = json_encode($this->data);
             $result->user_tokens = Tokenizer::count(join('', array_values($this->data)));
             $result->total_tokens = Tokenizer::count($result->prompt);
 
@@ -203,6 +215,7 @@ class Copywriter extends Component
         $prompt = $this->service->prompts->filter(function ($prompt) {
             return $prompt->language_code === $this->language_;
         })->values();
+
         $prompt = empty($prompt) ? $this->service->prompts[0] : $prompt[0];
         $prompt = trim($prompt->raw_prompt);
         foreach ($this->data as $key => $value) {
@@ -210,6 +223,12 @@ class Copywriter extends Component
         }
 
         return $prompt;
+    }
+
+    private function promptIsValid()
+    {
+        $prompt = $this->prompt();
+        return (new Gpt3)->isSafe($prompt);
     }
 
 }

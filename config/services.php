@@ -32,6 +32,7 @@ return [
 
     'openai' => [
         'gpt3' => env('GPT3_TOKEN'),
+        'gpt3_content_filter_threshold' => env('GPT3_CONTENT_FILTER_THRESHOLD', 1),
     ],
 
     'slack' => [
