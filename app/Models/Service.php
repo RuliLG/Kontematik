@@ -69,6 +69,11 @@ class Service extends Model
         return App::environment('production') ? 'services' : 'dev_services';
     }
 
+    public function scopeEnabled($query)
+    {
+        return $query->where('is_enabled', true);
+    }
+
     /**
      * Determine if the model should be searchable.
      *
