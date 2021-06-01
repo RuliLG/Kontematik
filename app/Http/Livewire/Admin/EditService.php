@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Service;
-use Codeat3\BladeEosIcons\BladeEosIconsServiceProvider;
+use App\Models\ServiceCategory;
 use Livewire\Component;
 use Str;
 
@@ -23,7 +23,10 @@ class EditService extends Component
         'service.icon_name' => 'required|string',
     ];
 
+    public $categories = [];
     public $icons = [];
+
+    public $iconQuery = '';
 
     public function mount()
     {
@@ -38,12 +41,7 @@ class EditService extends Component
             $this->service->icon_name = 'eos-nfc';
         }
 
-        $icons = collect(
-            array_slice(scandir(realpath(public_path() . '/../vendor/codeat3/blade-eos-icons/resources/svg')), 2)
-        )->map(function ($name) {
-            return 'eos-' . str_replace('.svg', '', $name);
-        });
-        $this->icons = $icons;
+        $this->categories = ServiceCategory::orderBy('order', 'ASC')->get();
     }
 
     public function render()
@@ -54,6 +52,11 @@ class EditService extends Component
     public function updatedServiceName($newVal)
     {
         $this->service->slug = Str::slug($newVal);
+    }
+
+    public function updatedIconQuery($newVal)
+    {
+        $this->searchIcons();
     }
 
     public function setColor($color)
@@ -68,5 +71,28 @@ class EditService extends Component
         $this->service->slug = Str::slug($this->service->slug);
         $this->service->save();
         return redirect(route('admin'));
+    }
+
+    private function searchIcons()
+    {
+        if (empty($this->iconQuery)) {
+            $this->icons = [];
+            return;
+        }
+
+        $slug = Str::slug($this->iconQuery);
+
+        $icons = collect(
+            array_slice(scandir(realpath(public_path() . '/../vendor/codeat3/blade-eos-icons/resources/svg')), 2)
+        )
+            ->map(function ($name) {
+                return 'eos-' . str_replace('.svg', '', $name);
+            })
+            ->filter(function ($name) use ($slug) {
+                return strpos($name, $slug) !== false;
+            })
+            ->take(20);
+
+        $this->icons = $icons;
     }
 }

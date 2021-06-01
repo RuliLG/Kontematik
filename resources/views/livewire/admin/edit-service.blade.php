@@ -4,9 +4,8 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
             <div class="flex items-center space-x-5">
                 <div class="flex-shrink-0">
-                    <div class="relative">
-                        <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80" alt="">
-                        <span class="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span>
+                    <div class="relative bg-{{ $service->tw_color }}-100 rounded-full h-16 w-16 flex items-center justify-center text-{{ $service->tw_color }}-800">
+                        @svg($service->icon_name, 'w-8 h-8')
                     </div>
                 </div>
                 <div>
@@ -82,14 +81,39 @@
                                 </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm font-medium text-gray-500">
-                                        Icon
+                                        Category
                                     </dt>
                                     <dd class="mt-1 text-sm text-gray-900">
-                                        <select wire:model="service.icon_name">
-                                            @foreach ($icons as $icon)
-                                            <option value="{{ $icon }}">{{ $icon }}</option>
+                                        <select wire:model="service.service_category_id" class="block w-full border border-gray-300 rounded">
+                                            <option value="">Select category</option>
+                                            @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endforeach
                                         </select>
+                                    </dd>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Icon: @svg($service->icon_name, 'w-6 h-6 inline-flex ml-4 text-gray-800')
+                                    </dt>
+                                    <dd class="mt-1 text-sm text-gray-900">
+                                        <input type="search" class="block bg-transparent py-3 px-4 text-lg text-gray-700 border-gray-300 rounded-lg w-full focus:outline-none focus:ring-0" placeholder="Search icon" wire:model.debounce.1000ms="iconQuery">
+                                        @if ($iconQuery === '')
+                                        <span class="block mt-8 text-gray-600 text-2xl text-center">Write to find an icon</span>
+                                        @elseif (empty($icons))
+                                        <span class="block mt-8 text-gray-600 text-2xl text-center">No icons were found</span>
+                                        @else
+                                        <ul class="mt-8 flex flex-wrap justify-center">
+                                            @foreach ($icons as $icon)
+                                            <li class="w-48 p-4">
+                                                <div wire:click="$set('service.icon_name', '{{ $icon }}')" class="flex flex-col items-center justify-center cursor-pointer group hover:text-{{$service->tw_color}}-600">
+                                                    @svg($icon, 'w-8 h-8 text-gray-700 group-hover:text-' . $service->tw_color . '-600')
+                                                    <span class="mt-4 w-full text-center">{{ $icon }}</span>
+                                                </div>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                        @endif
                                     </dd>
                                 </div>
                             </dl>
