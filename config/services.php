@@ -32,6 +32,7 @@ return [
 
     'openai' => [
         'gpt3' => env('GPT3_TOKEN'),
+        'gpt3_content_filter_threshold' => env('GPT3_CONTENT_FILTER_THRESHOLD', 1),
     ],
 
     'slack' => [
@@ -50,5 +51,10 @@ return [
         'access-key' => env('UNSPLASH_ACCESS_KEY'),
         'secret-key' => env('UNSPLASH_SECRET_KEY'),
     ],
+
+    'mailjet' => [
+        'key' => env('MAILJET_APIKEY'),
+        'secret' => env('MAILJET_APISECRET'),
+    ]
 
 ];

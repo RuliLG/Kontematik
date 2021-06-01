@@ -10,6 +10,7 @@
         "blade-ui-kit/blade-heroicons": "^0.3.1",
         "blade-ui-kit/blade-icons": "^0.5.1",
         "codeat3/blade-eos-icons": "^1.0",
+        "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -17,11 +18,14 @@
         "laravel/scout": "^9.1",
         "laravel/slack-notification-channel": "^2.3",
         "laravel/spark-stripe": "^1.0",
+        "laravel/telescope": "^4.4",
         "laravel/tinker": "^2.5",
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "league/flysystem-cached-adapter": "~1.0",
         "livewire/livewire": "^2.4",
+        "mailjet/laravel-mailjet": "^3.0",
         "silver-diamond/silver-diamond": "^1.5",
-        "stidges/laravel-country-flags": "^2.0",
-        "laravel/telescope": "^4.4"
+        "stidges/laravel-country-flags": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

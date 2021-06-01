@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Jobs\CheckMailjetContact;
+use App\Jobs\UpdateMailjetContact;
 use App\Policies\TextGenerationPolicy;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spark\Billable;
 use Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Billable, HasFactory, Notifiable;
 
@@ -33,6 +36,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'photo_s3_key',
     ];
 
     /**
@@ -50,6 +54,22 @@ class User extends Authenticatable
         static::creating(function ($user) {
             if (!$user->api_token) {
                 $user->api_token = Str::random(80);
+            }
+        });
+
+        static::created(function ($user) {
+            dispatch(new CheckMailjetContact($user));
+        });
+
+        static::deleting(function ($user) {
+            dispatch(new UpdateMailjetContact(null, $user->email, true));
+        });
+
+        static::updated(function ($user) {
+            if ($user->mailjet_id) {
+                dispatch(new UpdateMailjetContact($user));
+            } else {
+                dispatch(new CheckMailjetContact($user));
             }
         });
     }
@@ -80,5 +100,14 @@ class User extends Authenticatable
     public function getTrialDaysLeftAttribute()
     {
         return max(0, TextGenerationPolicy::MAX_FREE_DAYS - now()->diffInDays($this->email_verified_at));
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if (!$this->photo_s3_key) {
+            return 'https://eu.ui-avatars.com/api/?background=0569A0&size=256&color=fff&name=' . str_replace(' ', '+', $this->name);
+        }
+
+        return Storage::temporaryUrl($this->photo_s3_key, now()->addHours(24));
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CopyController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,9 +23,11 @@ Route::get('/', function () {
     return Auth::check() ? redirect(route('dashboard')) : redirect(route('login'));
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::get('/tools', [CopyController::class, 'render'])->name('dashboard');
-    Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->name('tool');
+    Route::get('/tools/{service:slug}', [CopyController::class, 'renderTool'])->middleware('service-enabled')->name('tool');
+    Route::get('/account', [ProfileController::class, 'render'])->name('profile');
+    Route::get('/account/password', [ProfileController::class, 'renderPassword'])->name('profile.password');
     Route::get('/library', [LibraryController::class, 'render'])->name('library');
 
     Route::middleware('admin')->group(function () {

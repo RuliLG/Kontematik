@@ -94,6 +94,28 @@ class Gpt3 {
         return $response->json()['choices'];
     }
 
+    public function isSafe ($prompt)
+    {
+        $prompt = strpos($prompt, '###') !== false ? explode('###', $prompt) : explode("\n\n", $prompt);
+        $prompt = $prompt[count($prompt) - 1];
+        $prompt = "<|endoftext|>" . $prompt . "\n--\nLabel:";
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('services.openai.gpt3')
+        ])
+            ->post('https://api.openai.com/v1/engines/content-filter-alpha-c4/completions', [
+                'prompt' => $prompt,
+                'max_tokens' => 1,
+                'temperature' => 0.0,
+                'top_p' => 0,
+                'logprobs' => 10,
+            ]);
+
+        $response->throw();
+        $choice = $response->json()['choices'][0];
+        $minSafety = config('services.openai.gpt3_content_filter_threshold');
+        return intval($choice['text']) <= $minSafety;
+    }
+
     private function getStopWord($prompt)
     {
         if (strpos($prompt, '###') !== false) {
