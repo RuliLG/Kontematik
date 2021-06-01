@@ -13,7 +13,7 @@
                                     <!-- Profile -->
                                     <div class="flex items-center space-x-3">
                                         <div class="flex-shrink-0 h-12 w-12">
-                                            <img class="h-12 w-12 rounded-full" src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixqx=01KW5UG9Sk&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80" alt="">
+                                            <img class="h-12 w-12 rounded-full" src="{{ Auth::user()->photo_url }}" alt="{{ Auth::user()->name }}">
                                         </div>
                                         <div class="space-y-1">
                                             <div class="text-sm font-medium text-gray-900">{{ Auth::user()->name }}</div>
