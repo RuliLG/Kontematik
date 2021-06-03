@@ -23,7 +23,7 @@
                                     <!-- Action buttons -->
                                     <div class="flex flex-col sm:flex-row xl:flex-col">
                                         <a href="{{ route('admin.new-service') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-lightBlue-600 hover:bg-lightBlue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lightBlue-500 xl:w-full">
-                                            New Service
+                                            New Tool
                                         </a>
                                     </div>
                                 </div>
@@ -36,7 +36,7 @@
                 <div class="bg-white lg:min-w-0 lg:flex-1">
                     <div class="pl-4 pr-6 pt-4 pb-4 border-b border-t border-gray-200 sm:pl-6 lg:pl-8 xl:pl-6 xl:border-t-0">
                         <div class="flex items-center">
-                            <h1 class="flex-1 text-lg font-medium">Services</h1>
+                            <h1 class="flex-1 text-lg font-medium">Tools</h1>
                         </div>
                     </div>
                     <ul class="relative z-0 divide-y divide-gray-200 border-b border-gray-200">

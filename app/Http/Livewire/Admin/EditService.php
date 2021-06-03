@@ -4,6 +4,9 @@ namespace App\Http\Livewire\Admin;
 
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Models\ServiceField;
+use App\Models\ServicePrompt;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Str;
 
@@ -21,10 +24,21 @@ class EditService extends Component
         'service.gpt3_n' => 'required|integer|lte:service.gpt3_best_of',
         'service.tw_color' => 'required|in:blueGray,coolGray,gray,trueGray,warmGray,red,orange,amber,yellow,lime,green,emerald,teal,cyan,lightBlue,blue,indigo,violet,purple,fuchsia,pink,rose',
         'service.icon_name' => 'required|string',
+        'fields.*.label' => 'required|string',
+        'fields.*.placeholder' => 'sometimes|nullable|string',
+        'fields.*.order' => 'required|integer|min:0|max:20',
+        'fields.*.type' => 'required|in:text,textarea',
+        'fields.*.max_length' => 'required|integer|min:0|max:512',
+        'fields.*.is_required' => 'required|boolean',
     ];
 
     public $categories = [];
     public $icons = [];
+
+    public $fields = [];
+    public $deletedFieldIds = [];
+
+    public $prompt = '';
 
     public $iconQuery = '';
 
@@ -39,6 +53,13 @@ class EditService extends Component
             $this->service->gpt3_best_of = 3;
             $this->service->gpt3_n = 3;
             $this->service->icon_name = 'eos-nfc';
+        } else {
+            $this->fields = $this->service->fields->toArray();
+
+            $prompt = $this->service->prompts()->where('language_code', 'es')->first();
+            if ($prompt) {
+                $this->prompt = $prompt->raw_prompt;
+            }
         }
 
         $this->categories = ServiceCategory::orderBy('order', 'ASC')->get();
@@ -67,10 +88,77 @@ class EditService extends Component
     public function save()
     {
         $this->validate();
+
+        DB::beginTransaction();
         $this->service->icon_name = $this->service->icon_name;
         $this->service->slug = Str::slug($this->service->slug);
         $this->service->save();
+
+
+        if (!empty($this->deletedFieldIds)) {
+            ServiceField::destroy($this->deletedFieldIds);
+        }
+
+        foreach ($this->fields as $field) {
+            if (isset($field['id'])) {
+                $serviceField = ServiceField::findOrFail($field['id']);
+            } else if (isset($field['_id'])) {
+                $serviceField = new ServiceField;
+                $serviceField->service_id = $this->service->id;
+                $serviceField->name = str_replace('-', '_', Str::slug($field['label']));
+            }
+
+            foreach ($field as $key => $value) {
+                if (Str::startsWith($key, '_')) {
+                    continue;
+                }
+
+                $serviceField->{$key} = $value;
+            }
+
+            $serviceField->save();
+        }
+
+        $prompt = ServicePrompt::where([
+            'service_id' => $this->service->id,
+            'language_code' => 'es',
+        ])->first();
+        if (!$prompt) {
+            $prompt = new ServicePrompt;
+            $prompt->service_id = $this->service->id;
+            $prompt->language_code = 'es';
+        }
+
+        $prompt->raw_prompt = $this->prompt;
+        $prompt->save();
+
+        DB::commit();
         return redirect(route('admin'));
+    }
+
+    public function addNewField()
+    {
+        $field = [
+            '_id' => Str::uuid(),
+            'service_id' => $this->service->id,
+            'order' => count($this->fields),
+            'is_required' => true,
+            'field_location' => 'default',
+            'type' => 'text',
+            'max_length' => 60,
+        ];
+        $this->fields[] = $field;
+    }
+
+    public function deleteField($index)
+    {
+        $field = $this->fields[$index];
+        if (isset($field['id'])) {
+            $this->deletedFieldIds[] = $field['id'];
+        }
+
+        unset($this->fields[$index]);
+        $this->fields = array_values($this->fields);
     }
 
     private function searchIcons()

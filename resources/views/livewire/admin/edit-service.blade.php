@@ -16,6 +16,11 @@
                 <a href="{{ route('admin') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
                     Go back
                 </a>
+                @if ($service->id)
+                <a href="{{ route('tool', ['service' => $service->slug]) }}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                    Preview
+                </a>
+                @endif
                 <button wire:click="save" type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
                     Save
                 </button>
@@ -24,12 +29,12 @@
 
         <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl">
             <div class="space-y-6 lg:col-start-1 lg:col-span-2">
-                <!-- Description list-->
+                <!-- Tool Information-->
                 <section aria-labelledby="applicant-information-title">
                     <div class="bg-white shadow sm:rounded-lg">
                         <div class="px-4 py-5 sm:px-6">
                             <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">
-                                Service Information
+                                Tool Information
                             </h2>
                         </div>
                         <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
@@ -121,7 +126,7 @@
                     </div>
                 </section>
 
-                <!-- Comments-->
+                <!-- GPT3 -->
                 <section aria-labelledby="notes-title">
                     <div class="bg-white shadow sm:rounded-lg sm:overflow-hidden">
                         <div class="divide-y divide-gray-200">
@@ -168,6 +173,74 @@
                                         </dd>
                                     </div>
                                 </dl>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fields -->
+                <section aria-labelledby="fields-title">
+                    <div class="bg-white shadow sm:rounded-lg sm:overflow-hidden">
+                        <div class="divide-y divide-gray-200">
+                            <div class="px-4 py-5 sm:px-6">
+                                <h2 id="fields-title" class="text-lg font-medium text-gray-900">Fields</h2>
+                            </div>
+                            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                <div class="grid grid-cols-1 gap-y-8">
+                                    @foreach ($fields as $i => $field)
+                                    <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-4 grid grid-cols-1 gap-4 md:grid-cols-3" wire:key="{{ isset($field['id']) ? $field['id'] : $field['_id'] }}">
+                                        <label class="text-sm text-gray-900">
+                                            <span class="block">Field label</span>
+                                            <input type="text" class="bg-white border border-gray-200 rounded block w-full" wire:model="fields.{{ $i }}.label">
+                                        </label>
+                                        <label class="text-sm text-gray-900">
+                                            <span class="block">Field placeholder</span>
+                                            <input type="text" class="bg-white border border-gray-200 rounded block w-full" wire:model="fields.{{ $i }}.placeholder">
+                                            <small class="block text-xs text-gray-500">This would be the sample value displayed to the user.</small>
+                                        </label>
+                                        <label class="text-sm text-gray-900">
+                                            <span class="block">Field type</span>
+                                            <select wire:model="fields.{{ $i }}.type" class="border border-gray-200 rounded block w-full">
+                                                <option value="text">Textfield</option>
+                                                <option value="textarea">Textarea</option>
+                                            </select>
+                                        </label>
+                                        <label class="text-sm text-gray-900">
+                                            <span class="block">Order</span>
+                                            <input type="number" min="0" max="8" class="bg-white border border-gray-200 rounded block w-full" wire:model="fields.{{ $i }}.order">
+                                        </label>
+                                        <label class="text-sm text-gray-900">
+                                            <span class="block">Max length</span>
+                                            <input type="number" min="0" max="512" class="bg-white border border-gray-200 rounded block w-full" wire:model="fields.{{ $i }}.max_length">
+                                        </label>
+                                        <label class="text-sm text-gray-900">
+                                            <input type="checkbox" class="h-6 w-6 text-blue-600" wire:model="fields.{{ $i }}.is_required">
+                                            <span>Required</span>
+                                        </label>
+                                        <button type="button" class="absolute right-0 top-0 p-2 inline-block text-gray-400 hover:text-red-600" wire:click="deleteField({{ $i }})">@svg('eos-delete-o', 'h-6 w-6')</button>
+                                    </div>
+                                    @endforeach
+                                    <button type="button" wire:click="addNewField" class="inline-flex w-full items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">Add new field</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Prompts -->
+                <section aria-labelledby="prompts-title">
+                    <div class="bg-white shadow sm:rounded-lg sm:overflow-hidden">
+                        <div class="divide-y divide-gray-200">
+                            <div class="px-4 py-5 sm:px-6">
+                                <h2 id="prompts-title" class="text-lg font-medium text-gray-900">Prompts</h2>
+                            </div>
+                            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                                <div class="grid grid-cols-1 gap-y-8">
+                                    <label class="text-sm text-gray-900">
+                                        <span class="block">🇪🇸 Prompt</span>
+                                        <textarea wire:model="prompt" rows="7" class="block w-full border-gray-300 rounded-lg p-4"></textarea>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>

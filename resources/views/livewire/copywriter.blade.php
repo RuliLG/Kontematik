@@ -12,6 +12,7 @@
                     wire:model.debounce.250="data.{{ $field->name }}"
                     class="block w-full p-4 rounded-lg border border-gray-300"
                     required="{{ $field->is_required ? 'true' : 'false' }}"
+                    placeholder="{{ $field->placeholder }}"
                     {{ $i === 0 ? 'autofocus' : ''}}
                 ></textarea>
                 @else
@@ -22,6 +23,7 @@
                     wire:model.debounce.250="data.{{ $field->name }}"
                     class="block w-full p-4 rounded-lg border border-gray-300"
                     required="{{ $field->is_required ? 'true' : 'false' }}"
+                    placeholder="{{ $field->placeholder }}"
                     {{ $i === 0 ? 'autofocus' : ''}}
                 >
                 @endif
