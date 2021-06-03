@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CopyController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\ProfileController;
@@ -28,6 +29,12 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/account', [ProfileController::class, 'render'])->name('profile');
     Route::get('/account/password', [ProfileController::class, 'renderPassword'])->name('profile.password');
     Route::get('/library', [LibraryController::class, 'render'])->name('library');
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/admin', [AdminController::class, 'render'])->name('admin');
+        Route::get('/admin/service/new', [AdminController::class, 'renderNewService'])->name('admin.new-service');
+        Route::get('/admin/service/{service:slug}', [AdminController::class, 'renderEditService'])->name('admin.service');
+    });
 });
 
 require __DIR__.'/auth.php';
