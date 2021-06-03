@@ -106,7 +106,6 @@ class EditService extends Component
             } else if (isset($field['_id'])) {
                 $serviceField = new ServiceField;
                 $serviceField->service_id = $this->service->id;
-                $serviceField->name = str_replace('-', '_', Str::slug($field['label']));
             }
 
             foreach ($field as $key => $value) {
@@ -147,6 +146,7 @@ class EditService extends Component
             'field_location' => 'default',
             'type' => 'text',
             'max_length' => 60,
+            'name' => 'field_' . Str::random(5),
         ];
         $this->fields[] = $field;
     }

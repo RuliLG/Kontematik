@@ -192,6 +192,7 @@
                                         <label class="text-sm text-gray-900">
                                             <span class="block">Field label</span>
                                             <input type="text" class="bg-white border border-gray-200 rounded block w-full" wire:model="fields.{{ $i }}.label">
+                                            <small class="block text-xs text-gray-500">Field name to use in prompt: {{ $field['name'] }}</small>
                                         </label>
                                         <label class="text-sm text-gray-900">
                                             <span class="block">Field placeholder</span>
