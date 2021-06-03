@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Settings;
 
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Str;
 
@@ -69,7 +70,7 @@ class Account extends Component
 
     public function getPhotoUrlProperty()
     {
-        return $this->user->photo_url;
+        return $this->key ? Storage::url($this->key) : $this->user->photo_url;
     }
 
     public function toggle($key)
