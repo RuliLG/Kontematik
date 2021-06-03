@@ -39,3 +39,10 @@ window.updateTooltip = function (button, delay) {
 window.trackGoal = function (goalId) {
     window.fathom.trackGoal(goalId, 0);
 };
+
+window.alpineFieldLength = function (fieldName, max) {
+    return {
+        max: max,
+        text: document.getElementById(fieldName).textContent
+    }
+};

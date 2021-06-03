@@ -94,6 +94,8 @@ class Copywriter extends Component
             return;
         }
 
+        $this->validate($this->validationRules());
+
         if ($this->language === 'auto') {
             $text = join("\n", array_values($this->data));
             $lang = (new Intelligence())->detectLanguage($text);
@@ -229,6 +231,20 @@ class Copywriter extends Component
     {
         $prompt = $this->prompt();
         return (new Gpt3)->isSafe($prompt);
+    }
+
+    private function validationRules()
+    {
+        $rules = [];
+        foreach ($this->service->fields as $field) {
+            $rule = ['string'];
+            $rule[] = $field->is_required ? 'required' : 'sometimes|nullable';
+            $rule[] = $field->max_length > 0 ? 'max:' . $field->max_length : null;
+            $rule = array_filter($rule);
+            $rules['data.' . $field->name] = join('|', $rule);
+        }
+
+        return $rules;
     }
 
 }

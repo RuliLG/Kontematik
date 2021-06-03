@@ -9,3 +9,7 @@
 .rating:hover svg, .rating .selected {
     color: #ffc107;
 }
+
+[x-cloak] {
+    display: none;
+}

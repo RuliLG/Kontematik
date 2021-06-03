@@ -2,31 +2,54 @@
     <form wire:submit.prevent="generate" onsubmit="trackGoal('DIIAOO6H')" id="copy-form">
         <div class="space-y-4">
             @foreach ($this->default_fields as $i => $field)
-            <div>
+            <div x-data="alpineFieldLength('{{ $field->name }}', {{ $field->max_length }})">
                 <label class="block font-bold text-gray-500">{{ $field->label }}</label>
-                @if ($field->type === 'textarea')
-                <textarea
-                    type="text"
-                    wire:loading.attr="disabled"
-                    wire:target="generate"
-                    wire:model.debounce.250="data.{{ $field->name }}"
-                    class="block w-full p-4 rounded-lg border border-gray-300"
-                    required="{{ $field->is_required ? 'true' : 'false' }}"
-                    placeholder="{{ $field->placeholder }}"
-                    {{ $i === 0 ? 'autofocus' : ''}}
-                ></textarea>
-                @else
-                <input
-                    type="text"
-                    wire:loading.attr="disabled"
-                    wire:target="generate"
-                    wire:model.debounce.250="data.{{ $field->name }}"
-                    class="block w-full p-4 rounded-lg border border-gray-300"
-                    required="{{ $field->is_required ? 'true' : 'false' }}"
-                    placeholder="{{ $field->placeholder }}"
-                    {{ $i === 0 ? 'autofocus' : ''}}
-                >
-                @endif
+                <div class="relative">
+                    @if ($field->type === 'textarea')
+                    <textarea
+                        id="{{ $field->name }}"
+                        type="text"
+                        rows="5"
+                        class="block w-full p-4 rounded-lg border border-gray-300"
+                        placeholder="{{ $field->placeholder }}"
+                        required="{{ $field->is_required ? 'true' : 'false' }}"
+                        wire:loading.attr="disabled"
+                        wire:target="generate"
+                        wire:model.debounce.250="data.{{ $field->name }}"
+                        {{ $i === 0 ? 'autofocus' : ''}}
+                        x-model="text"
+                    ></textarea>
+                    @else
+                    <input
+                        id="{{ $field->name }}"
+                        type="text"
+                        wire:loading.attr="disabled"
+                        wire:target="generate"
+                        wire:model.debounce.250="data.{{ $field->name }}"
+                        class="block w-full p-4 rounded-lg border border-gray-300"
+                        required="{{ $field->is_required ? 'true' : 'false' }}"
+                        placeholder="{{ $field->placeholder }}"
+                        {{ $i === 0 ? 'autofocus' : ''}}
+                        x-model="text"
+                    >
+                    @endif
+                    @if ($field->max_length > 0)
+                    <span
+                        x-cloak
+                        class="absolute right-0 bottom-0 mr-2 mb-2 text-sm font-semibold bg-white p-1 rounded"
+                        :class="{
+                            'text-gray-600': text.length < max * 0.8,
+                            'text-yellow-700': text.length >= max * 0.8 && text.length <= max,
+                            'text-red-700': text.length > max
+                        }"
+                    >
+                        <span x-text="text.length"></span> / {{ $field->max_length }}
+                    </span>
+                    @endif
+                </div>
+                @error('data.' . $field->name)
+                <span class="mt-1 block text-red-600 text-sm">{{ str_replace('data.', '', $message) }}</span>
+                @enderror
             </div>
             @endforeach
         </div>
