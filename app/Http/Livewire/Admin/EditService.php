@@ -105,7 +105,6 @@ class EditService extends Component
                 $serviceField = ServiceField::findOrFail($field['id']);
             } else if (isset($field['_id'])) {
                 $serviceField = new ServiceField;
-                $serviceField->service_id = $this->service->id;
             }
 
             foreach ($field as $key => $value) {
@@ -115,6 +114,8 @@ class EditService extends Component
 
                 $serviceField->{$key} = $value;
             }
+
+            $serviceField->service_id = $this->service->id;
 
             $serviceField->save();
         }
