@@ -38,7 +38,7 @@
                 </a>
             </div>
             @endcannot
-            @if (Auth::user()->can('can-generate') && !Auth::user()->subscribed())
+            @if (!Auth::user()->is_admin && Auth::user()->can('can-generate') && !Auth::user()->subscribed())
             <div class="pl-8 ml-auto sm:pl-10">
                 <a href="/billing" class="bg-gradient-to-tr from-pink-500 to-lightBlue-600 font-bold text-white rounded-lg block text-sm px-4 py-2">
                     Free trial ({{ Auth::user()->trial_days_left }} {{ Auth::user()->trial_days_left == 1 ? 'day' : 'days' }} left)
