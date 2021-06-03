@@ -30,6 +30,7 @@ class EditService extends Component
         'fields.*.type' => 'required|in:text,textarea',
         'fields.*.max_length' => 'required|integer|min:0|max:512',
         'fields.*.is_required' => 'required|boolean',
+        'prompt' => 'required|string',
     ];
 
     public $categories = [];
