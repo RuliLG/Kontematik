@@ -3,7 +3,12 @@
         <div class="space-y-4">
             @foreach ($this->default_fields as $i => $field)
             <div x-data="alpineFieldLength('{{ $field->name }}', {{ $field->max_length }})">
-                <label class="block font-bold text-gray-500">{{ $field->label }}</label>
+                <label class="block font-bold text-gray-500">
+                    {{ $field->label }}
+                    @if ($field->is_required)
+                    <small class="text-sm text-gray-400 inline pl-2 font-normal">&mdash; Required</small>
+                    @endif
+                </label>
                 <div class="relative">
                     @if ($field->type === 'textarea')
                     <textarea
