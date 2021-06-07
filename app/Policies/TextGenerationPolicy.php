@@ -9,7 +9,7 @@ class TextGenerationPolicy
 {
     use HandlesAuthorization;
 
-    public const MAX_FREE_TOKENS = 3500;
+    public const MAX_FREE_TOKENS = 10000;
     public const MAX_FREE_DAYS = 7;
 
     /**
