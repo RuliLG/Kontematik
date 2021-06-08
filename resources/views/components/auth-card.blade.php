@@ -6,4 +6,7 @@
 
         {{ $slot }}
     </div>
+    @if (request()->routeIs('login'))
+    <a href="{{ route('register') }}" class="block w-full mx-auto mt-4 text-pink-50 font-medium text-center text-sm sm:max-w-md">Don't have an account yet? Register now</a>
+    @endif
 </div>
