@@ -12,7 +12,7 @@
                 <div class="bg-white shadow-lg border border-gray-300 p-4 rounded-lg flex justify-between items-center lg:p-8">
                     <div class="flex items-start justify-start">
                         <span class="h-8 w-8 flex-shrink-0 mr-4 bg-lightBlue-800 flex items-center justify-center rounded-full text-white font-bold text-sm">{{ $i + 1 }}</span>
-                        <p class="font-bold text-gray-900" id="result_{{ $i }}">{{ $result->output }}</p>
+                        <p class="font-bold text-gray-900" id="result_{{ $i }}">@result($result->output)</p>
                     </div>
                     <div class="flex-shrink-0 ml-4">
                         <button type="button" wire:click="removeResult({{ $result->id }})" onclick="updateTooltip(this)" class="text-lightBlue-800 p-4 focus:outline-none" data-tooltip="{{ __('Remove from your library') }}" data-action-tooltip="{{ __('Removed!') }}">

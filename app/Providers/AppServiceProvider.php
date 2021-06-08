@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Policies\TextGenerationPolicy;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,5 +32,9 @@ class AppServiceProvider extends ServiceProvider
         //
 
         Gate::define('can-generate', [TextGenerationPolicy::class, 'generate']);
+
+        Blade::directive('result', function ($expression) {
+            return "<?php echo nl2br(str_replace('<', '&lt;', str_replace('>', '&gt;', $expression))); ?>";
+        });
     }
 }

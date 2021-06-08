@@ -122,7 +122,9 @@
                 <div class="bg-white shadow-lg border border-gray-300 p-4 rounded-lg flex justify-between items-center lg:p-8">
                     <div class="flex items-start justify-start">
                         <span class="h-8 w-8 flex-shrink-0 mr-4 bg-lightBlue-800 flex items-center justify-center rounded-full text-white font-bold text-sm">{{ $i + 1 }}</span>
-                        <p class="font-bold text-gray-900" id="result_{{ $i }}">{{ $response }}</p>
+                        <p class="font-bold text-gray-900" id="result_{{ $i }}">
+                            @result($response)
+                        </p>
                     </div>
                     <div class="flex-shrink-0 ml-4">
                         <button type="button" wire:click="saveGeneratedText('{{ $i }}')" onclick="updateTooltip(this)" class="p-4 focus:outline-none {{ isset($saved[$response]) ? 'text-lightBlue-700' : 'text-gray-400' }}" data-tooltip="{{ isset($saved[$response]) ? __('Remove from your library') : __('Save to your library') }}" data-action-tooltip="{{ isset($saved[$response]) ? __('Removed!') : __('Saved!') }}">
