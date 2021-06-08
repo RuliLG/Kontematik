@@ -140,7 +140,7 @@ class Copywriter extends Component
                 ->completion($this->prompt());
 
             $this->responses = array_map(function ($r) {
-                return trim($r['text']);
+                return Str::finish(Str::beforeLast(trim($r['text']), '.'), '.');
             }, $response);
             $result->response = json_encode($this->responses);
             $result->save();
