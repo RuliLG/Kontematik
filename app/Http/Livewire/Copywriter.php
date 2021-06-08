@@ -163,8 +163,9 @@ class Copywriter extends Component
         }
     }
 
-    public function saveGeneratedText ($text)
+    public function saveGeneratedText ($idx)
     {
+        $text = $this->result->response[$idx];
         if (isset($this->saved[$text])) {
             SavedResult::where([
                 'service_id' => $this->service->id,
