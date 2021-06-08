@@ -15,7 +15,12 @@ class Gpt3 {
 
     public function davinci()
     {
-        $this->engine = 'davinci';
+        return $this->engine('davinci');
+    }
+
+    public function engine($name)
+    {
+        $this->engine = $name;
         return $this;
     }
 

@@ -132,7 +132,7 @@ class Copywriter extends Component
             $result->total_tokens = Tokenizer::count($result->prompt);
 
             $response = (new Gpt3)
-                ->davinci()
+                ->engine($this->service->gpt3_engine)
                 ->temperature($this->service->gpt3_temperature)
                 ->tokens($this->service->gpt3_tokens)
                 ->bestOf($this->service->gpt3_best_of)

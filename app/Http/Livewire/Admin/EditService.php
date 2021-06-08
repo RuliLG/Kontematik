@@ -22,6 +22,7 @@ class EditService extends Component
         'service.gpt3_tokens' => 'required|integer|min:16|max:2048',
         'service.gpt3_best_of' => 'required|integer|min:1|max:20',
         'service.gpt3_n' => 'required|integer|lte:service.gpt3_best_of',
+        'service.gpt3_engine' => 'required|in:davinci,curie,ada,babbage',
         'service.tw_color' => 'required|in:blueGray,coolGray,gray,trueGray,warmGray,red,orange,amber,yellow,lime,green,emerald,teal,cyan,lightBlue,blue,indigo,violet,purple,fuchsia,pink,rose',
         'service.icon_name' => 'required|string',
         'fields.*.label' => 'required|string',
@@ -53,6 +54,7 @@ class EditService extends Component
             $this->service->gpt3_tokens = 64;
             $this->service->gpt3_best_of = 3;
             $this->service->gpt3_n = 3;
+            $this->service->gpt3_engine = 'davinci';
             $this->service->icon_name = 'eos-nfc';
         } else {
             $this->fields = $this->service->fields->toArray();

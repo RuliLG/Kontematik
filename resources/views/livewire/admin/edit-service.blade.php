@@ -172,6 +172,19 @@
                                             <input type="number" min="1" max="20" class="bg-white border border-gray-200 rounded w-48" wire:model="service.gpt3_n">
                                         </dd>
                                     </div>
+                                    <div class="sm:col-span-1">
+                                        <dt class="text-sm font-medium text-gray-500">
+                                            Engine
+                                        </dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            <select class="bg-white border border-gray-200 rounded w-full" wire:model="service.gpt3_best_of">
+                                                <option value="davinci">Davinci</option>
+                                                <option value="curie">Curie</option>
+                                                <option value="babbage">Babbage</option>
+                                                <option value="ada">Ada</option>
+                                            </select>
+                                        </dd>
+                                    </div>
                                 </dl>
                             </div>
                         </div>
