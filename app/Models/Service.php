@@ -29,7 +29,7 @@ class Service extends Model
 
     public function getTagsAttribute()
     {
-        return array_filter(array_map('trim', explode(',', $this->attributes['tags'])));
+        return array_filter(array_map('trim', json_decode($this->attributes['tags']) ?: []));
     }
 
     /**

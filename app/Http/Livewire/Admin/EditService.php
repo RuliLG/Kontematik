@@ -31,6 +31,7 @@ class EditService extends Component
         'fields.*.type' => 'required|in:text,textarea',
         'fields.*.max_length' => 'required|integer|min:0|max:512',
         'fields.*.is_required' => 'required|boolean',
+        'tags' => 'sometimes|string',
         'prompts.es' => 'required|string',
         'prompts.en' => 'sometimes|string',
         'prompts.de' => 'sometimes|string',
@@ -53,6 +54,7 @@ class EditService extends Component
     ];
 
     public $iconQuery = '';
+    public $tags = '';
 
     public function mount()
     {
@@ -66,8 +68,10 @@ class EditService extends Component
             $this->service->gpt3_n = 3;
             $this->service->gpt3_engine = 'davinci';
             $this->service->icon_name = 'eos-nfc';
+            $this->service->tags = '[]';
         } else {
             $this->fields = $this->service->fields->toArray();
+            $this->tags = join(',', $this->service->tags);
 
             $prompts = $this->service->prompts;
             foreach ($prompts as $prompt) {
@@ -105,6 +109,13 @@ class EditService extends Component
         DB::beginTransaction();
         $this->service->icon_name = $this->service->icon_name;
         $this->service->slug = Str::slug($this->service->slug);
+        $this->service->tags = json_encode(
+            array_values(
+                array_filter(
+                    array_map('trim', $this->tags ? explode(',', $this->tags) : [])
+                )
+            )
+        );
         $this->service->save();
 
 

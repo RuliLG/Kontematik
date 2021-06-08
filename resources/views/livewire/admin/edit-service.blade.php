@@ -55,6 +55,15 @@
                                         <input type="number" min="0" max="1000" class="bg-white border border-gray-200 rounded" wire:model="service.order">
                                     </dd>
                                 </div>
+                                <div class="sm:col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Tags
+                                    </dt>
+                                    <dd class="mt-1 text-sm text-gray-900">
+                                        <input type="text" wire:model="tags" class="bg-white border border-gray-200 rounded w-full">
+                                        <small class="block text-xs text-gray-500">Introduce multiple words separated by comma</small>
+                                    </dd>
+                                </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Color: {{ $service->tw_color }}
