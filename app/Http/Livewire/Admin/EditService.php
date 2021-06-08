@@ -31,7 +31,11 @@ class EditService extends Component
         'fields.*.type' => 'required|in:text,textarea',
         'fields.*.max_length' => 'required|integer|min:0|max:512',
         'fields.*.is_required' => 'required|boolean',
-        'prompt' => 'required|string',
+        'prompts.es' => 'required|string',
+        'prompts.en' => 'sometimes|string',
+        'prompts.de' => 'sometimes|string',
+        'prompts.fr' => 'sometimes|string',
+        'prompts.it' => 'sometimes|string',
     ];
 
     public $categories = [];
@@ -40,7 +44,13 @@ class EditService extends Component
     public $fields = [];
     public $deletedFieldIds = [];
 
-    public $prompt = '';
+    public $prompts = [
+        'es' => '',
+        'en' => '',
+        'de' => '',
+        'fr' => '',
+        'it' => ''
+    ];
 
     public $iconQuery = '';
 
@@ -59,9 +69,9 @@ class EditService extends Component
         } else {
             $this->fields = $this->service->fields->toArray();
 
-            $prompt = $this->service->prompts()->where('language_code', 'es')->first();
-            if ($prompt) {
-                $this->prompt = $prompt->raw_prompt;
+            $prompts = $this->service->prompts;
+            foreach ($prompts as $prompt) {
+                $this->prompts[$prompt->language_code] = $prompt->raw_prompt;
             }
         }
 
@@ -122,18 +132,29 @@ class EditService extends Component
             $serviceField->save();
         }
 
-        $prompt = ServicePrompt::where([
-            'service_id' => $this->service->id,
-            'language_code' => 'es',
-        ])->first();
-        if (!$prompt) {
-            $prompt = new ServicePrompt;
-            $prompt->service_id = $this->service->id;
-            $prompt->language_code = 'es';
-        }
+        foreach ($this->prompts as $lang => $text) {
 
-        $prompt->raw_prompt = $this->prompt;
-        $prompt->save();
+            $prompt = ServicePrompt::where([
+                'service_id' => $this->service->id,
+                'language_code' => $lang,
+            ])->first();
+
+            if (!$prompt) {
+                if (empty($text)) {
+                    continue;
+                }
+
+                $prompt = new ServicePrompt;
+                $prompt->service_id = $this->service->id;
+                $prompt->language_code = $lang;
+            } else if (empty($text)) {
+                $prompt->delete();
+                continue;
+            }
+
+            $prompt->raw_prompt = $text;
+            $prompt->save();
+        }
 
         DB::commit();
         return redirect(route('admin'));

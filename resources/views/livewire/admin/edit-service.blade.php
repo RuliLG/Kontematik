@@ -250,10 +250,12 @@
                             </div>
                             <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
                                 <div class="grid grid-cols-1 gap-y-8">
+                                    @foreach ($prompts as $lang => $text)
                                     <label class="text-sm text-gray-900">
-                                        <span class="block">🇪🇸 Prompt</span>
-                                        <textarea wire:model="prompt" rows="7" class="block w-full border-gray-300 rounded-lg p-4"></textarea>
+                                        <span class="block">{{ country_flag($lang) }} Prompt</span>
+                                        <textarea wire:model="prompts.{{ $lang }}" rows="7" class="block w-full border-gray-300 rounded-lg p-4"></textarea>
                                     </label>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
