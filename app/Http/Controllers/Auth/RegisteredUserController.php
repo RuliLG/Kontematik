@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Niche;
+use App\Models\NicheUser;
 use App\Models\User;
 use App\Notifications\NewUserRegistration;
 use App\Providers\RouteServiceProvider;
@@ -22,7 +24,12 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        $niches = Niche::where('is_enabled', true)
+            ->orderBy('name', 'ASC')
+            ->get();
+        return view('auth.register', [
+            'niches' => $niches,
+        ]);
     }
 
     /**
@@ -39,6 +46,7 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::min(8)],
+            'niche.*' => 'required|exists:niches,id',
         ]);
 
         $user = User::create([
@@ -46,6 +54,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $niches = array_keys($request->get('niche'));
+        if (!empty($niches)) {
+            foreach ($niches as $nicheId) {
+                $record = new NicheUser;
+                $record->niche_id = $nicheId;
+                $record->user_id = $user->id;
+                $record->save();
+            }
+        }
 
         event(new Registered($user));
 

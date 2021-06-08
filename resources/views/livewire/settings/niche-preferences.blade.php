@@ -13,7 +13,7 @@
                     @foreach ($niches as $niche)
                     <label class="w-full flex items-center justify-start">
                         <input type="checkbox" class="h-6 w-6 text-purple-600 rounded border border-gray-300" wire:model="selectedNiches.{{ $niche->id }}">
-                        <span class="ml-4 flex-1">{{ $niche->name }}</span>
+                        <span class="ml-4 flex-1 text-gray-700">{{ $niche->name }}</span>
                     </label>
                     @endforeach
                 </div>
