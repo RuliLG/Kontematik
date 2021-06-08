@@ -43,6 +43,6 @@ window.trackGoal = function (goalId) {
 window.alpineFieldLength = function (fieldName, max) {
     return {
         max: max,
-        text: document.getElementById(fieldName).textContent
+        text: document.getElementById(fieldName).getAttribute('data-initial-value') || ''
     }
 };

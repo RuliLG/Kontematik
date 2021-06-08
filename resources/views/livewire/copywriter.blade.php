@@ -22,6 +22,7 @@
                         wire:target="generate"
                         wire:model.debounce.250="data.{{ $field->name }}"
                         {{ $i === 0 ? 'autofocus' : ''}}
+                        data-initial-value="{{ $data[$field->name] }}"
                         x-model="text"
                     ></textarea>
                     @else
@@ -35,6 +36,7 @@
                         required="{{ $field->is_required ? 'true' : 'false' }}"
                         placeholder="{{ $field->placeholder }}"
                         {{ $i === 0 ? 'autofocus' : ''}}
+                        data-initial-value="{{ $data[$field->name] }}"
                         x-model="text"
                     >
                     @endif
@@ -149,6 +151,7 @@
                 @endfor
             </div>
         </div>
+
         @if (!$result->webflow_share_uuid)
         <div class="text-center mt-8">
             <button wire:loading.remove wire:target="share" type="button" wire:click="share" onclick="trackGoal('GXJK4T5S')" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg hover:bg-lightBlue-600 md:w-auto focus:outline-none">
@@ -156,8 +159,7 @@
                 Share
             </button>
             <div wire:loading wire:target="share" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg md:w-auto">
-                @svg('eos-ios-share', 'w-6 h-6 mr-4')
-                Generating sharing link...
+                @svg('eos-ios-share', 'w-6 h-6 mr-4')<span>Generating sharing link...</span>
             </div>
         </div>
         @else
