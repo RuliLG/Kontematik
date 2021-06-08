@@ -17,4 +17,9 @@ class ProfileController extends Controller
     {
         return view('password-settings');
     }
+
+    public function renderNichePreferences()
+    {
+        return view('niche-preferences');
+    }
 }
