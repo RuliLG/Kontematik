@@ -10,7 +10,8 @@ class CopyController extends Controller
 {
     public function render()
     {
-
+        $service = Service::where('is_enabled', true)->orderBy('order', 'ASC')->first();
+        return redirect(route('tool', ['service' => $service->slug]));
         return view('copy');
     }
 
