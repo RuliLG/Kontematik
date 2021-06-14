@@ -55,6 +55,11 @@ return [
     'mailjet' => [
         'key' => env('MAILJET_APIKEY'),
         'secret' => env('MAILJET_APISECRET'),
-    ]
+    ],
+
+    'hubspot' => [
+        'client' => env('HUBSPOT_CLIENT_ID'),
+        'secret' => env('HUBSPOT_SECRET'),
+    ],
 
 ];
