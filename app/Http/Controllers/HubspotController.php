@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OauthToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -23,6 +24,17 @@ class HubspotController extends Controller
                 $token = false;
             }
         }
+
+        if ($token) {
+            $oauth = new OauthToken;
+            $oauth->user_id = auth()->id();
+            $oauth->provider = 'hubspot';
+            $oauth->token = $token['access_token'];
+            $oauth->refresh_token = $token['refresh_token'];
+            $oauth->expires_at = now()->addSeconds($token['expires_in']);
+            $oauth->save();
+        }
+
         return view('integrations.hubspot.oauth', [
             'token' => $token,
         ]);

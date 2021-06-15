@@ -37,7 +37,9 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/service/new', [AdminController::class, 'renderNewService'])->name('admin.new-service');
         Route::get('/admin/service/{service:slug}', [AdminController::class, 'renderEditService'])->name('admin.service');
     });
+});
 
+Route::middleware('auth-token', 'verified')->group(function () {
     Route::get('/integrations/hubspot', [HubspotController::class, 'render'])->name('hubspot');
     Route::post('/integrations/hubspot', [HubspotController::class, 'oauth']);
 });
