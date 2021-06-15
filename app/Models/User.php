@@ -110,4 +110,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return Storage::temporaryUrl($this->photo_s3_key, now()->addHours(24));
     }
+
+    public function oauth_tokens()
+    {
+        return $this->hasMany(OauthToken::class)
+            ->where('expires_at', '>=', now())
+            ->orderBy('expires_at', 'DESC');
+    }
 }

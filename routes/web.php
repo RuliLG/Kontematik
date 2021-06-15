@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CopyController;
+use App\Http\Controllers\HubspotController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,11 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/service/new', [AdminController::class, 'renderNewService'])->name('admin.new-service');
         Route::get('/admin/service/{service:slug}', [AdminController::class, 'renderEditService'])->name('admin.service');
     });
+});
+
+Route::middleware('auth-token', 'verified')->group(function () {
+    Route::get('/integrations/hubspot', [HubspotController::class, 'render'])->name('hubspot');
+    Route::post('/integrations/hubspot', [HubspotController::class, 'oauth']);
 });
 
 require __DIR__.'/auth.php';

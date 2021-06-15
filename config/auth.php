@@ -46,6 +46,10 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+
+        'oauth-api' => [
+            'driver' => 'oauth-token',
+        ],
     ],
 
     /*

@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Exceptions\LimitReachedException;
+use App\Exceptions\UnsafePrompt;
+use App\Http\Controllers\Controller;
+use App\Models\Service;
+use App\Models\ServiceCategory;
+use App\Services\Copywriter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class ToolsController extends Controller
+{
+    public function index ()
+    {
+        $serviceIds = Service::enabled()->select('id')->get()->pluck('id');
+        $categories = ServiceCategory::with([
+                'services' => function ($query) use ($serviceIds) {
+                    $query->whereIn('id', empty($serviceIds) ? [-1] : $serviceIds)
+                        ->where('is_enabled', true);
+                }
+            ])
+            ->with('services.fields')
+            ->orderBy('order', 'ASC')
+            ->get()
+            ->filter(function ($category) {
+                return !$category->services->isEmpty();
+            })
+            ->values();
+
+        return response()->json([
+            'categories' => $categories,
+        ]);
+    }
+
+    public function inference (Service $tool, Request $request)
+    {
+        $copywriter = new Copywriter;
+        Validator::make($request->all(), $copywriter->validationRules($tool))->validate();
+        try {
+            $response = $copywriter->generate($tool, $request->all(), $request->get('language', 'auto'));
+        } catch (LimitReachedException $e) {
+            return response()->json(['error' => 'limit_reached'], 403);
+        } catch (UnsafePrompt $e) {
+            return response()->json(['error' => 'unsafe_prompt'], 403);
+        }
+
+        return response()->json($response);
+    }
+}

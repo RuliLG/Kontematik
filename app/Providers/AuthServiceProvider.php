@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\OauthToken;
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Auth::viaRequest('oauth-token', function (Request $request) {
+            $oauth = OauthToken::where('expires_at', '>=', now())
+                ->where('token', $request->token)
+                ->where('provider', $request->provider)
+                ->first();
+            return $oauth ? User::find($oauth->user_id) : null;
+        });
     }
 }

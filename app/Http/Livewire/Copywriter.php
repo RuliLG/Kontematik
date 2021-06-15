@@ -2,12 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use App\Exceptions\LimitReachedException;
+use App\Exceptions\UnsafePrompt;
 use App\Models\Result;
 use App\Models\SavedResult;
 use App\Models\Service;
 use App\Notifications\ErrorNotification;
 use App\Notifications\SavedResult as NotificationsSavedResult;
 use App\Notifications\TextGenerated;
+use App\Services\Copywriter as ServicesCopywriter;
 use App\Services\Gpt3;
 use App\Services\Intelligence;
 use App\Services\Tokenizer;
@@ -89,78 +92,25 @@ class Copywriter extends Component
         $this->responses = [];
         $this->result = null;
 
-        if (!Gate::allows('can-generate')) {
+        $copywriter = new ServicesCopywriter;
+        $this->validate($copywriter->validationRules($this->service, 'data.'));
+
+        try {
+            $response = $copywriter->generate($this->service, $this->data, $this->language);
+        } catch (LimitReachedException $e) {
             $this->addError('limit_reached', true);
             return;
-        }
-
-        $this->validate($this->validationRules());
-
-        if ($this->language === 'auto') {
-            $text = join("\n", array_values($this->data));
-            $lang = (new Intelligence())->detectLanguage($text);
-            $langDoesNotExist = $this->service->prompts->filter(function ($prompt) use ($lang) {
-                return $lang === $prompt->language_code;
-            })->isEmpty();
-
-            if ($langDoesNotExist) {
-                $lang = $this->service->prompts[0]->language_code;
-            }
-
-            $this->language_ = $lang;
-        } else {
-            $this->language_ = $this->language;
-        }
-
-        $result = new Result;
-        $result->user_id = Auth::id();
-        $result->service_id = $this->service->id;
-        $result->language_code = $this->language_;
-        $result->prompt = $this->prompt();
-        $result->params = json_encode($this->data);
-
-        // Validate prompt against OpenAI
-        if (!$this->promptIsValid()) {
-            $result->is_nsfw = true;
-            $result->save();
+        } catch (UnsafePrompt $e) {
             $this->addError('unsafe_prompt', true);
             return;
         }
 
-        try {
-            $result->user_tokens = Tokenizer::count(join('', array_values($this->data)));
-            $result->total_tokens = Tokenizer::count($result->prompt);
-
-            $response = (new Gpt3)
-                ->engine($this->service->gpt3_engine)
-                ->temperature($this->service->gpt3_temperature)
-                ->tokens($this->service->gpt3_tokens)
-                ->bestOf($this->service->gpt3_best_of)
-                ->take($this->service->gpt3_n)
-                ->completion($this->prompt());
-
-            $this->responses = array_map(function ($r) {
-                return Str::finish(Str::beforeLast(trim($r['text']), '.'), '.');
-            }, $response);
-            $result->response = json_encode($this->responses);
-            $result->save();
-
-            $this->result = $result;
-            $this->indexable = $result->is_indexable;
-            $this->rating = intval($this->result->rating);
-            $this->saved = [];
-
-            Notification::route('slack', config('services.slack.notification'))
-                ->notify(new TextGenerated($result));
-        } catch (\Exception $e) {
-            Notification::route('slack', config('services.slack.notification'))
-                ->notify(new ErrorNotification($e, [
-                    'Tool' => $this->service->name,
-                    'Prompt' => $this->prompt(),
-                    'Language' => $this->language_,
-                    'UserId' => Auth::id(),
-                ]));
-        }
+        $this->language_ = $response['language'];
+        $this->responses = $response['responses'];
+        $this->result = $response['result'];
+        $this->indexable = $response['result']->is_indexable;
+        $this->rating = intval($this->result->rating);
+        $this->saved = [];
     }
 
     public function saveGeneratedText ($idx)
@@ -193,15 +143,12 @@ class Copywriter extends Component
 
     public function share()
     {
-        if (!$this->result->webflow_share_uuid) {
-            $this->result->webflow_share_uuid = Str::uuid();
-            (new Webflow)->publish($this->result);
-        }
+        (new ServicesCopywriter)->share($this->result);
     }
 
     public function toggleIndexation()
     {
-        (new Webflow)->toggleIndexation($this->result);
+        (new ServicesCopywriter)->toggleIndexation($this->result);
         $this->indexable = $this->result->is_indexable;
     }
 
@@ -211,41 +158,6 @@ class Copywriter extends Component
         $this->result->rating = $rating;
         $this->result->save();
         $this->rating = $this->result->rating;
-    }
-
-    private function prompt()
-    {
-        $prompt = $this->service->prompts->filter(function ($prompt) {
-            return $prompt->language_code === $this->language_;
-        })->values();
-
-        $prompt = empty($prompt) ? $this->service->prompts[0] : $prompt[0];
-        $prompt = trim($prompt->raw_prompt);
-        foreach ($this->data as $key => $value) {
-            $prompt = str_replace('{' . $key . '}', $value, $prompt);
-        }
-
-        return $prompt;
-    }
-
-    private function promptIsValid()
-    {
-        $prompt = $this->prompt();
-        return (new Gpt3)->isSafe($prompt);
-    }
-
-    private function validationRules()
-    {
-        $rules = [];
-        foreach ($this->service->fields as $field) {
-            $rule = ['string'];
-            $rule[] = $field->is_required ? 'required' : 'sometimes|nullable';
-            $rule[] = $field->max_length > 0 ? 'max:' . $field->max_length : null;
-            $rule = array_filter($rule);
-            $rules['data.' . $field->name] = join('|', $rule);
-        }
-
-        return $rules;
     }
 
 }
