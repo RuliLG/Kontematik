@@ -263,6 +263,9 @@
                                     <label class="text-sm text-gray-900">
                                         <span class="block">{{ country_flag($lang) }} Prompt</span>
                                         <textarea wire:model="prompts.{{ $lang }}" rows="7" class="block w-full border-gray-300 rounded-lg p-4"></textarea>
+                                        @if ($promptErrors[$lang])
+                                        <small class="text-red-600 text-lg block mt-2">{{ $promptErrors[$lang] }}</small>
+                                        @endif
                                     </label>
                                     @endforeach
                                 </div>

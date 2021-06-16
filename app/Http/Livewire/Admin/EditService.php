@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\ServiceField;
 use App\Models\ServicePrompt;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Str;
@@ -52,6 +53,13 @@ class EditService extends Component
         'fr' => '',
         'it' => ''
     ];
+    public $promptErrors = [
+        'es' => null,
+        'en' => null,
+        'de' => null,
+        'fr' => null,
+        'it' => null
+    ];
 
     public $iconQuery = '';
     public $tags = '';
@@ -79,6 +87,8 @@ class EditService extends Component
             }
         }
 
+        $this->checkPromptsForErrors();
+
         $this->categories = ServiceCategory::orderBy('order', 'ASC')->get();
     }
 
@@ -95,6 +105,11 @@ class EditService extends Component
     public function updatedIconQuery($newVal)
     {
         $this->searchIcons();
+    }
+
+    public function updatedPrompts($newVal, $key)
+    {
+        $this->checkPromptsForErrors();
     }
 
     public function setColor($color)
@@ -149,6 +164,7 @@ class EditService extends Component
                 'service_id' => $this->service->id,
                 'language_code' => $lang,
             ])->first();
+            $this->promptErrors[$lang] = null;
 
             if (!$prompt) {
                 if (empty($text)) {
@@ -218,5 +234,21 @@ class EditService extends Component
             ->take(20);
 
         $this->icons = $icons;
+    }
+
+    private function checkPromptsForErrors()
+    {
+        $fields = array_column($this->fields, 'name');
+        foreach ($this->prompts as $lang => $prompt) {
+            $this->promptErrors[$lang] = null;
+            $matches = [];
+            preg_match_all('/\{([\w_-]+)\}/', $prompt, $matches);
+            foreach ($matches[1] as $possibleField) {
+                if (!in_array($possibleField, $fields)) {
+                    $this->promptErrors[$lang] = $possibleField . ' does not exist.';
+                    break;
+                }
+            }
+        }
     }
 }
