@@ -59,6 +59,13 @@
                 </div>
             </div>
 
+            <div class="border-t border-gray-300 pt-4 mt-4 md:col-span-2">
+                <label class="w-full flex items-center justify-start">
+                    <input type="checkbox" class="h-6 w-6 text-purple-600 rounded border border-gray-300" name="accepts" value="1" required>
+                    <span class="ml-4 flex-1 text-gray-700 text-sm">I've read and agree with the <a href="https://www.notion.so/kontematik/Legal-Notice-aecc535d36f34f4c86b5f1ea8db726cc" target="_blank" rel="noopener noreferrer" class="text-pink-600 hover:underline">terms of use</a> and <a href="https://www.notion.so/kontematik/Privacy-Policy-ae9c48c4b4864a8a803157d466e1feba" target="_blank" rel="noopener noreferrer" class="text-pink-600 hover:underline">privacy policy</a></span>
+                </label>
+            </div>
+
             <div class="flex items-center justify-end mt-4 md:col-span-2">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
