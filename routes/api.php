@@ -24,6 +24,6 @@ Route::prefix('v1')->group(function () {
         Route::get('tools', [ToolsController::class, 'index']);
         Route::post('{tool:slug}/inference', [ToolsController::class, 'inference']);
         Route::post('oauth', [OauthController::class, 'perform']);
-        Route::get('oauth/{service:slug}/actions', [OauthController::class, 'getActions']);
+        Route::get('oauth/{tool:slug}/actions', [OauthController::class, 'getActions']);
     });
 });

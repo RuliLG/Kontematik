@@ -23,12 +23,12 @@ class OauthController extends Controller
         }
     }
 
-    public function getActions (Service $service, Request $request)
+    public function getActions (Service $tool, Request $request)
     {
         try {
             $oauth = OauthFactory::from($request->provider);
             return response()->json([
-                'actions' => $oauth->getActions($service)
+                'actions' => $oauth->getActions($tool)
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], $e->getCode() > 0 ? $e->getCode() : 500);

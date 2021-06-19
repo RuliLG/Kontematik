@@ -27,7 +27,7 @@ abstract class OauthProvider {
         ])->first();
 
         if (!$actions) {
-            return null;
+            return [];
         }
 
         return array_intersect_key($this->getAvailableActions(), array_flip($actions->actions));
