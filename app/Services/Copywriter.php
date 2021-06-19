@@ -42,55 +42,31 @@ class Copywriter {
             $language_ = $language;
         }
 
-        $result = new Result;
-        $result->user_id = Auth::id();
-        $result->service_id = $tool->id;
-        $result->language_code = $language_;
-        $result->prompt = $this->prompt($tool, $data, $language);
-        $result->params = json_encode($data);
-
-        // Validate prompt against OpenAI
-        if (!$this->promptIsValid($result->prompt)) {
-            $result->is_nsfw = true;
-            $result->save();
-            throw new UnsafePrompt();
-        }
-
+        $result = null;
         try {
-            $result->user_tokens = Tokenizer::count(join('', array_values($data)));
-            $result->total_tokens = Tokenizer::count($result->prompt);
-
-            $response = (new Gpt3)
-                ->engine($tool->gpt3_engine)
-                ->temperature($tool->gpt3_temperature)
-                ->tokens($tool->gpt3_tokens)
-                ->bestOf($tool->gpt3_best_of)
-                ->take($tool->gpt3_n)
-                ->completion($this->prompt($tool, $data, $language));
-
-            $responses = array_map(function ($r) {
-                return Str::finish(Str::beforeLast(trim($r['text']), '.'), '.');
-            }, $response);
-            $result->response = json_encode($responses);
-            $result->save();
+            switch ($tool->generation_type) {
+                case 'per_line':
+                    $result = $this->perLineGeneration($tool, $language_, $data);
+                    break;
+                default:
+                    $result = $this->singleGeneration($tool, $language_, $data);
+                    break;
+            }
 
             Notification::route('slack', config('services.slack.notification'))
-                ->notify(new TextGenerated($result));
+                ->notify(new TextGenerated($result['result']));
         } catch (\Exception $e) {
             Notification::route('slack', config('services.slack.notification'))
                 ->notify(new ErrorNotification($e, [
                     'Tool' => $tool->name,
-                    'Prompt' => $this->prompt($tool, $data, $language),
+                    'Prompt' => $this->prompt($tool, $data, $language_),
                     'Language' => $language_,
                     'UserId' => Auth::id(),
                 ]));
+            throw $e;
         }
 
-        return [
-            'responses' => $responses,
-            'result' => $result,
-            'language' => $language_,
-        ];
+        return $result;
     }
 
     public function share(Result $result)
@@ -138,5 +114,145 @@ class Copywriter {
         }
 
         return $rules;
+    }
+
+    private function singleGeneration(Service $tool, $language, $data)
+    {
+        $result = new Result;
+        $result->user_id = Auth::id();
+        $result->service_id = $tool->id;
+        $result->language_code = $language;
+        $result->prompt = $this->prompt($tool, $data, $language);
+        $result->params = json_encode($data);
+
+        // Validate prompt against OpenAI
+        if (!$this->promptIsValid($result->prompt)) {
+            $result->is_nsfw = true;
+            $result->save();
+            throw new UnsafePrompt();
+        }
+
+        $result->user_tokens = Tokenizer::count(join('', array_values($data)));
+        $result->total_tokens = Tokenizer::count($result->prompt);
+
+        $response = (new Gpt3)
+            ->engine($tool->gpt3_engine)
+            ->temperature($tool->gpt3_temperature)
+            ->tokens($tool->gpt3_tokens)
+            ->bestOf($tool->gpt3_best_of)
+            ->take($tool->gpt3_n)
+            ->completion($this->prompt($tool, $data, $language));
+
+        $responses = array_map(function ($r) {
+            return Str::finish(Str::beforeLast(trim($r['text']), '.'), '.');
+        }, $response);
+        $result->response = json_encode($responses);
+        $result->save();
+
+        return [
+            'responses' => $responses,
+            'result' => $result,
+            'language' => $language,
+        ];
+    }
+
+    private function perLineGeneration(Service $tool, $language, $data)
+    {
+        if (!isset($data[$tool->per_line_generation_field_name])) {
+            throw new \Exception('Invalid data');
+        }
+
+        $lines = collect(explode("\n", $data[$tool->per_line_generation_field_name]))
+            ->map(function ($line) {
+                return trim($line);
+            })
+            ->filter();
+
+        // Cortamos por el máximo de líneas a generar
+        if ($tool->per_line_max_lines > 0) {
+            $lines = $lines->slice(0, $tool->per_line_max_lines);
+        }
+
+        // Comprobamos cada posible input a ver si es válido
+        $unsafe = false;
+        $prompts = [];
+        foreach ($lines as $line) {
+            $partial = array_merge([], $data);
+            $partial[$tool->per_line_generation_field_name] = $line;
+            $prompt = $this->prompt($tool, $partial, $language);
+            $prompts[] = $prompt;
+            if (!$this->promptIsValid($prompt)) {
+                $unsafe = true;
+                break;
+            }
+        }
+
+        $result = new Result;
+        $result->user_id = Auth::id();
+        $result->service_id = $tool->id;
+        $result->language_code = $language;
+        $result->prompt = join('--------------', $prompts);
+        $result->params = json_encode($data);
+
+        if ($unsafe) {
+            $result->is_nsfw = true;
+            $result->save();
+            throw new UnsafePrompt();
+        }
+
+        // Generamos los párrafos para cada línea
+        $result->user_tokens = Tokenizer::count(join('', array_values($data)));
+        $totalTokens = 0;
+        $responses = [];
+
+        // TODO: Max generations per minute
+
+        foreach ($lines as $line) {
+            $partial = array_merge([], $data);
+            $partial[$tool->per_line_generation_field_name] = $line;
+            $prompt = $this->prompt($tool, $partial, $language);
+            $totalTokens += Tokenizer::count($prompt);
+
+            $response = (new Gpt3)
+                ->engine($tool->gpt3_engine)
+                ->temperature($tool->gpt3_temperature)
+                ->tokens($tool->gpt3_tokens)
+                ->bestOf($tool->gpt3_best_of)
+                ->take($tool->gpt3_n)
+                ->completion($prompt);
+
+            $response = array_map(function ($r) {
+                return Str::finish(Str::beforeLast(trim($r['text']), '.'), '.');
+            }, $response);
+
+            foreach ($response as $i => $r) {
+                if (!isset($responses[$i])) {
+                    $responses[$i] = [];
+                    foreach ($partial as $key => $value) {
+                        if ($key === $tool->per_line_generation_field_name) {
+                            continue;
+                        }
+
+                        $responses[$i][] = $value;
+                    }
+                }
+
+                $responses[$i][] = $line . "\n" . $r;
+            }
+        }
+
+        $responses = array_map(function ($response) {
+            return join("\n\n", $response);
+        }, $responses);
+
+        $result->total_tokens = $totalTokens;
+        $result->response = json_encode($responses);
+        $result->save();
+
+        return [
+            'responses' => $responses,
+            'result' => $result,
+            'language' => $language,
+        ];
     }
 }

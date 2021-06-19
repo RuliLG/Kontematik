@@ -38,13 +38,15 @@ class ToolsController extends Controller
     public function inference (Service $tool, Request $request)
     {
         $copywriter = new Copywriter;
-        Validator::make($request->all(), $copywriter->validationRules($tool))->validate();
+        Validator::make($request->except(['token', 'provider']), $copywriter->validationRules($tool))->validate();
         try {
-            $response = $copywriter->generate($tool, $request->all(), $request->get('language', 'auto'));
+            $response = $copywriter->generate($tool, $request->except(['token', 'provider']), $request->get('language', 'auto'));
         } catch (LimitReachedException $e) {
             return response()->json(['error' => 'limit_reached'], 403);
         } catch (UnsafePrompt $e) {
             return response()->json(['error' => 'unsafe_prompt'], 403);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'unknown'], 500);
         }
 
         return response()->json($response);

@@ -2,6 +2,8 @@
 
 namespace App\Oauth;
 
+use App\Services\Intelligence;
+use App\Services\Unsplash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -19,7 +21,36 @@ class HubspotProvider extends OauthProvider {
         return [
             OauthAction::CREATE_PAGE => 'Create new page',
             OauthAction::CREATE_PAGES => 'Create pillar pages',
+            OauthAction::CREATE_BLOG_POST => 'Create blog post',
         ];
+    }
+
+    public function doBlogPost (Request $request)
+    {
+        $blogs = collect($this->getBlogs($request));
+        $language = (new Intelligence)->detectLanguage($request->get('text'));
+        $languageBlogs = $blogs->filter(function ($blog) use ($language) {
+            return $blog['language'] === $language;
+        });
+        $blog = $languageBlogs->isEmpty() ? $blogs[0] : $languageBlogs[0];
+        $title = explode("\n", $request->get('text'))[0];
+
+        $images = (new Unsplash)->search($title, $language);
+        $imageUrl = $images ? $images[0]['urls']['full'] : null;
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $request->token,
+        ])->post($this->endpoint . '/content/api/v2/blog-posts', [
+            'name' => $title,
+            'slug' => Str::slug($title),
+            'post_body' => str_replace("\n", '<br>', $request->get('text')),
+            'content_group_id' => $blog['id'],
+            'featured_image' => $imageUrl,
+        ]);
+
+        $response->throw();
+
+        return response()->json(['success' => true]);
     }
 
     public function doPage (Request $request)
@@ -33,7 +64,7 @@ class HubspotProvider extends OauthProvider {
 
         $response->throw();
 
-        return response()->json(['success' => true, 'response' => $response->json()]);
+        return response()->json(['success' => true]);
     }
 
     public function doPages (Request $request)
@@ -64,5 +95,20 @@ class HubspotProvider extends OauthProvider {
         $response->throw();
 
         return response()->json(['success' => true]);
+    }
+
+    private function getBlogs (Request $request)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $request->token,
+        ])->get($this->endpoint . '/content/api/v2/blogs');
+        $response->throw();
+        $response = $response->json();
+
+        if (!isset($response['objects']) || empty($response['objects'])) {
+            throw new \Exception('There are no blogs');
+        }
+
+        return $response['objects'];
     }
 }
