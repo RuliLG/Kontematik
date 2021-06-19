@@ -26,7 +26,7 @@ class AuthToken
 
                 $user->api_token = Str::random(80);
                 $user->save();
-            } else{}
+            }
         }
 
         return $next($request);

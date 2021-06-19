@@ -13,6 +13,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "hubspot/api-client": "^3.0",
         "laravel/framework": "^8.40",
         "laravel/scout": "^9.1",
         "laravel/slack-notification-channel": "^2.3",
