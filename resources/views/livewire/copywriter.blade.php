@@ -32,7 +32,7 @@
                         wire:loading.attr="disabled"
                         wire:target="generate"
                         wire:model.debounce.250="data.{{ $field->name }}"
-                        class="block w-full p-4 rounded-lg border border-gray-300"
+                        class="block w-full p-4 pr-16 rounded-lg border border-gray-300"
                         required="{{ $field->is_required ? 'true' : 'false' }}"
                         placeholder="{{ $field->placeholder }}"
                         {{ $i === 0 ? 'autofocus' : ''}}
@@ -43,7 +43,7 @@
                     @if ($field->max_length > 0)
                     <span
                         x-cloak
-                        class="absolute right-0 bottom-0 mr-2 mb-2 text-sm font-semibold bg-white p-1 rounded"
+                        class="absolute right-0 bottom-0 mr-2 my-1 text-sm font-semibold bg-white px-1 pb-3 pt-4 rounded text-red-700"
                         :class="{
                             'text-gray-600': text.length < max * 0.8,
                             'text-yellow-700': text.length >= max * 0.8 && text.length <= max,
