@@ -44,7 +44,7 @@ class TextGenerated extends Notification implements ShouldQueue
     {
         return (new SlackMessage)
                     ->from('Kontematik')
-                    ->content(':eyes: The user #' . $this->result->user_id . ' just used *' . $this->result->service->name . '*')
+                    ->content(':eyes: The user #' . $this->result->user->email . ' just used *' . $this->result->service->name . '*')
                     ->attachment(function ($attachment) {
                         $attachment->title('Prompt')
                             ->content($this->result->prompt);
