@@ -11,13 +11,11 @@ use App\Notifications\TextGenerated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class Copywriter {
     public function generate(Service $tool, $data, $language = 'auto')
     {
-        $responses = [];
         $tool->load('prompts');
 
         if (!Gate::allows('can-generate')) {
@@ -73,13 +71,13 @@ class Copywriter {
     {
         if (!$result->webflow_share_uuid) {
             $result->webflow_share_uuid = Str::uuid();
-            (new Webflow)->publish($result);
+            (new Webflow())->publish($result);
         }
     }
 
     public function toggleIndexation(Result $result)
     {
-        (new Webflow)->toggleIndexation($result);
+        (new Webflow())->toggleIndexation($result);
     }
 
     private function prompt(Service $tool, $data, $lang)
@@ -99,7 +97,7 @@ class Copywriter {
 
     public function promptIsValid($prompt)
     {
-        return (new Gpt3)->isSafe($prompt);
+        return (new Gpt3())->isSafe($prompt);
     }
 
     public function validationRules(Service $tool, $prefix = '')
@@ -118,7 +116,7 @@ class Copywriter {
 
     private function singleGeneration(Service $tool, $language, $data)
     {
-        $result = new Result;
+        $result = new Result();
         $result->user_id = Auth::id();
         $result->service_id = $tool->id;
         $result->language_code = $language;
@@ -135,7 +133,7 @@ class Copywriter {
         $result->user_tokens = Tokenizer::count(join('', array_values($data)));
         $result->total_tokens = Tokenizer::count($result->prompt);
 
-        $response = (new Gpt3)
+        $response = (new Gpt3())
             ->engine($tool->gpt3_engine)
             ->temperature($tool->gpt3_temperature)
             ->tokens($tool->gpt3_tokens)
@@ -187,7 +185,7 @@ class Copywriter {
             }
         }
 
-        $result = new Result;
+        $result = new Result();
         $result->user_id = Auth::id();
         $result->service_id = $tool->id;
         $result->language_code = $language;
@@ -213,7 +211,7 @@ class Copywriter {
             $prompt = $this->prompt($tool, $partial, $language);
             $totalTokens += Tokenizer::count($prompt);
 
-            $response = (new Gpt3)
+            $response = (new Gpt3())
                 ->engine($tool->gpt3_engine)
                 ->temperature($tool->gpt3_temperature)
                 ->tokens($tool->gpt3_tokens)
@@ -225,7 +223,7 @@ class Copywriter {
                 return Str::finish(Str::beforeLast(trim($r['text']), '.'), '.');
             }, $response);
 
-            foreach ($response as $i => $r) {
+            foreach ($response as $i => $response) {
                 if (!isset($responses[$i])) {
                     $responses[$i] = [];
                     foreach ($partial as $key => $value) {
@@ -237,7 +235,7 @@ class Copywriter {
                     }
                 }
 
-                $responses[$i][] = $line . "\n" . $r;
+                $responses[$i][] = $line . "\n" . $response;
             }
         }
 

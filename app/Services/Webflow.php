@@ -98,13 +98,13 @@ class Webflow {
 
     private function getImage(Result $result)
     {
-        $unsplash = new Unsplash;
+        $unsplash = new Unsplash();
         $keywords = [];
 
         $texts = [$result->params, $result->response];
         foreach ($texts as $text) {
             $text = join("\n", $text);
-            $textRankKeywords = (new Intelligence)->getKeywords($text);
+            $textRankKeywords = (new Intelligence())->getKeywords($text);
             if (empty($textRankKeywords)) {
                 continue;
             }

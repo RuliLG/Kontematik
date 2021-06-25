@@ -9,7 +9,7 @@ class Tokenizer {
      * @param string $text
      * @return int
      */
-    static function count ($text)
+    public static function count ($text)
     {
         // 1 token = 4 characters
         return ceil(strlen($text) / 4);

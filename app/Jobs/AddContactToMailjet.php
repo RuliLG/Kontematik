@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Mailjet;
 
 class AddContactToMailjet implements ShouldQueue
@@ -41,7 +42,7 @@ class AddContactToMailjet implements ShouldQueue
                 'IsExcludedFromCampaigns' => !$this->user->notify_new_tools && !$this->user->notify_new_products,
             ]);
         } catch (\Exception $e) {
-
+            Log::error($e);
         }
     }
 }

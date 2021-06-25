@@ -9,7 +9,7 @@ class OauthFactory {
     {
         switch ($id) {
             case 'hubspot':
-                return new HubspotProvider;
+                return new HubspotProvider();
             default:
                 throw new UnknownOauthAction('Unknown provider', 500);
         }

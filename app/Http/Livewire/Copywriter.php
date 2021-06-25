@@ -4,20 +4,11 @@ namespace App\Http\Livewire;
 
 use App\Exceptions\LimitReachedException;
 use App\Exceptions\UnsafePrompt;
-use App\Models\Result;
 use App\Models\SavedResult;
 use App\Models\Service;
-use App\Notifications\ErrorNotification;
 use App\Notifications\SavedResult as NotificationsSavedResult;
-use App\Notifications\TextGenerated;
 use App\Services\Copywriter as ServicesCopywriter;
-use App\Services\Gpt3;
-use App\Services\Intelligence;
-use App\Services\Tokenizer;
-use App\Services\Webflow;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -40,8 +31,6 @@ class Copywriter extends Component
         'it' => 'Italian',
         'fr' => 'French',
     ];
-
-    private $language_ = null;
 
     public function mount(Service $service)
     {
@@ -105,7 +94,6 @@ class Copywriter extends Component
             return;
         }
 
-        $this->language_ = $response['language'];
         $this->responses = $response['responses'];
         $this->result = $response['result'];
         $this->indexable = $response['result']->is_indexable;

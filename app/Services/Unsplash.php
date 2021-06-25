@@ -11,9 +11,9 @@ class Unsplash
     {
         Log::debug('Searching ' . $keyword . ' (' . $lang . ') in Unsplash...');
         $response = Http::withHeaders([
-                'Accept-Version' => 'v1',
-                'Authorization' => 'Client-ID ' . config('services.unsplash.access-key'),
-            ])
+            'Accept-Version' => 'v1',
+            'Authorization' => 'Client-ID ' . config('services.unsplash.access-key'),
+        ])
             ->get('https://api.unsplash.com/search/photos', [
                 'query' => $keyword,
                 'lang' => $lang,

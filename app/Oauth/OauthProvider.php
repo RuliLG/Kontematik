@@ -17,7 +17,7 @@ abstract class OauthProvider {
         $this->name = $name;
     }
 
-    public abstract function getAvailableActions ();
+    abstract public function getAvailableActions ();
 
     public function getActions (Service $service)
     {

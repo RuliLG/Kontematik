@@ -19,7 +19,7 @@ class TextGenerationPolicy
      */
     public function __construct()
     {
-        //
+
     }
 
     public function generate(User $user)

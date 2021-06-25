@@ -7,7 +7,7 @@ class Gpt3 {
     private $engine_ = 'davinci';
     private $temperature_ = 0.9;
     private $topP_ = 1;
-    private $n_ = 1;
+    private $nTokens_ = 1;
     private $maxTokens_ = 16;
     private $presencePenalty_ = 0;
     private $freqPenalty_ = 0;
@@ -20,7 +20,7 @@ class Gpt3 {
 
     public function engine($name)
     {
-        $this->engine = $name;
+        $this->engine_ = $name;
         return $this;
     }
 
@@ -74,7 +74,7 @@ class Gpt3 {
     {
         assert($value > 0);
         assert($value <= 10);
-        $this->n_ = $value;
+        $this->nTokens_ = $value;
         return $this;
     }
 
@@ -83,12 +83,12 @@ class Gpt3 {
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . config('services.openai.gpt3')
         ])
-            ->post('https://api.openai.com/v1/engines/' . $this->engine . '/completions', [
+            ->post('https://api.openai.com/v1/engines/' . $this->engine_ . '/completions', [
                 'prompt' => $prompt,
                 'max_tokens' => $this->maxTokens_,
                 'temperature' => $this->temperature_,
                 'top_p' => $this->topP_,
-                'n' => $this->n_,
+                'n' => $this->nTokens_,
                 'presence_penalty' => $this->presencePenalty_,
                 'frequency_penalty' => $this->freqPenalty_,
                 'best_of' => $this->bestOf_,
