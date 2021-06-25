@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\ToolsController;
 use App\Http\Controllers\OauthController;
+use App\Http\Controllers\UnsplashController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,5 +26,6 @@ Route::prefix('v1')->group(function () {
         Route::post('{tool:slug}/inference', [ToolsController::class, 'inference']);
         Route::post('oauth', [OauthController::class, 'perform']);
         Route::get('oauth/{tool:slug}/actions', [OauthController::class, 'getActions']);
+        Route::get('unsplash', [UnsplashController::class, 'generate']);
     });
 });
