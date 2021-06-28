@@ -30,6 +30,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/account', [ProfileController::class, 'render'])->name('profile');
     Route::get('/account/password', [ProfileController::class, 'renderPassword'])->name('profile.password');
     Route::get('/account/preferences', [ProfileController::class, 'renderNichePreferences'])->name('profile.preferences');
+    Route::get('/account/integrations', [ProfileController::class, 'renderIntegrations'])->name('profile.integrations');
     Route::get('/library', [LibraryController::class, 'render'])->name('library');
 
     Route::middleware('admin')->group(function () {

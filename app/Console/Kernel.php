@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Http\Controllers\IntegrationsController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,6 +26,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune --hours=48')->daily();
+        $schedule->call(function () {
+            $controller = new IntegrationsController();
+            $controller->renew();
+        })->everyMinute();
     }
 
     /**
