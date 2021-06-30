@@ -51,14 +51,16 @@ class EditService extends Component
         'en' => '',
         'de' => '',
         'fr' => '',
-        'it' => ''
+        'it' => '',
+        'pt' => '',
     ];
     public $promptErrors = [
         'es' => null,
         'en' => null,
         'de' => null,
         'fr' => null,
-        'it' => null
+        'it' => null,
+        'pt' => null,
     ];
 
     public $iconQuery = '';

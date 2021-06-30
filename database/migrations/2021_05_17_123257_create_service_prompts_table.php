@@ -16,7 +16,7 @@ class CreateServicePromptsTable extends Migration
         Schema::create('service_prompts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_id')->constrained()->cascadeOnDelete();
-            $table->enum('language_code', ['es', 'en', 'de', 'fr', 'it'])->index();
+            $table->enum('language_code', ['es', 'en', 'de', 'fr', 'it', 'pt'])->index();
             $table->mediumText('raw_prompt');
             $table->timestamps();
         });

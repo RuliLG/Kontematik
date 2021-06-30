@@ -17,7 +17,7 @@ class CreateResultsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('SET NULL');
             $table->foreignId('service_id')->nullable()->constrained()->onDelete('SET NULL');
-            $table->enum('language_code', ['es', 'en', 'de', 'fr', 'it']);
+            $table->enum('language_code', ['es', 'en', 'de', 'fr', 'it', 'pt']);
             $table->mediumText('prompt');
             $table->mediumText('response')->nullable();
             $table->boolean('is_saved')->default(false)->index();

@@ -30,6 +30,7 @@ class Copywriter extends Component
         'de' => 'German',
         'it' => 'Italian',
         'fr' => 'French',
+        'pt' => 'Portuguese',
     ];
 
     public function mount(Service $service)
