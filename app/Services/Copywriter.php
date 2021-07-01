@@ -10,6 +10,7 @@ use App\Notifications\ErrorNotification;
 use App\Notifications\TextGenerated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -62,6 +63,9 @@ class Copywriter {
                     'UserId' => Auth::id(),
                     'Message' => $e->getMessage(),
                 ]));
+
+            Log::error('Error generating text for tool '. $tool->name . ': ' . $e->getMessage());
+
             throw $e;
         }
 
