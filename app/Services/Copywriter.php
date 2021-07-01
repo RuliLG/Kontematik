@@ -60,6 +60,7 @@ class Copywriter {
                     'Prompt' => $this->prompt($tool, $data, $language_),
                     'Language' => $language_,
                     'UserId' => Auth::id(),
+                    'Message' => $e->getMessage(),
                 ]));
             throw $e;
         }
