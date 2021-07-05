@@ -34,6 +34,12 @@
                 a.appendChild(r);
             })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
         </script>
+
+        <script type='text/javascript'>
+            window.$crisp=[];
+            window.CRISP_WEBSITE_ID='ccbf9cf8-ef32-4fcb-b08d-e4a818d4ad88';
+            (function(){d=document;s=d.createElement('script');s.src='https://client.crisp.chat/l.js';s.async=1;d.getElementsByTagName('head')[0].appendChild(s);})();
+        </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-white">
