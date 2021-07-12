@@ -58,7 +58,7 @@ class RegisteredUserController extends Controller
             'accepted_terms_ip' => $request->ip(),
         ]);
 
-        $niches = array_keys($request->get('niche'));
+        $niches = array_keys($request->get('niche') ?? []);
         if (!empty($niches)) {
             foreach ($niches as $nicheId) {
                 $record = new NicheUser;
