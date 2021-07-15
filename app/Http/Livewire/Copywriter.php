@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Exceptions\AlreadyGenerating;
 use App\Exceptions\LimitReachedException;
 use App\Exceptions\UnsafePrompt;
 use App\Models\SavedResult;
@@ -53,6 +54,7 @@ class Copywriter extends Component
         })
             ->sortBy('name')
             ->toArray();
+
     }
 
     public function render()
@@ -92,6 +94,9 @@ class Copywriter extends Component
             return;
         } catch (UnsafePrompt $e) {
             $this->addError('unsafe_prompt', true);
+            return;
+        } catch (AlreadyGenerating $e) {
+            $this->addError('already_generating', true);
             return;
         }
 
