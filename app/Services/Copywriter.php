@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\AlreadyGenerating;
 use App\Exceptions\LimitReachedException;
 use App\Exceptions\UnsafePrompt;
 use App\Models\Result;
@@ -21,6 +22,10 @@ class Copywriter {
 
         if (!Gate::allows('can-generate')) {
             throw new LimitReachedException();
+        }
+
+        if ($this->userIsAlreadyGenerating()) {
+            throw new AlreadyGenerating();
         }
 
         $language_ = null;
@@ -119,6 +124,16 @@ class Copywriter {
         return $rules;
     }
 
+    private function userIsAlreadyGenerating()
+    {
+        $result = Result::where('user_id', Auth::id())
+            ->where('created_at', '>=', now()->subMinutes(10))
+            ->whereNull('response')
+            ->where('is_nsfw', false)
+            ->first();
+        return $result ? true : false;
+    }
+
     private function singleGeneration(Service $tool, $language, $data)
     {
         $result = new Result();
@@ -135,8 +150,10 @@ class Copywriter {
             throw new UnsafePrompt();
         }
 
+
         $result->user_tokens = Tokenizer::count(join('', array_values($data)));
         $result->total_tokens = Tokenizer::count($result->prompt);
+        $result->save();
 
         // Calculate the number of tokens of the prompt examples
         $prompt = $tool->prompts->filter(function ($prompt) use ($language) {
@@ -210,6 +227,7 @@ class Copywriter {
             $result->save();
             throw new UnsafePrompt();
         }
+        $result->save();
 
         // Generamos los párrafos para cada línea
         $result->user_tokens = Tokenizer::count(join('', array_values($data)));
