@@ -155,18 +155,10 @@ class Copywriter {
         $result->total_tokens = Tokenizer::count($result->prompt);
         $result->save();
 
-        // Calculate the number of tokens of the prompt examples
-        $prompt = $tool->prompts->filter(function ($prompt) use ($language) {
-            return $prompt->language_code === $language;
-        })->values();
-        $rawPrompt = $prompt->isEmpty() ? $tool->prompts[0] : $prompt[0];
-        $rawPrompt = trim($rawPrompt->raw_prompt);
-        $promptTokens = max(0, Tokenizer::count($rawPrompt));
-
         $response = (new Gpt3())
             ->engine($tool->gpt3_engine)
             ->temperature($tool->gpt3_temperature)
-            ->tokens($tool->gpt3_tokens + $promptTokens)
+            ->tokens($tool->gpt3_tokens)
             ->bestOf($tool->gpt3_best_of)
             ->take($tool->gpt3_n)
             ->completion($this->prompt($tool, $data, $language));
