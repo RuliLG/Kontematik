@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\AlreadyGenerating;
 use App\Exceptions\LimitReachedException;
 use App\Exceptions\UnsafePrompt;
 use App\Http\Controllers\Controller;
@@ -46,8 +45,6 @@ class ToolsController extends Controller
             return response()->json(['error' => 'limit_reached'], 403);
         } catch (UnsafePrompt $e) {
             return response()->json(['error' => 'unsafe_prompt'], 403);
-        } catch (AlreadyGenerating $e) {
-            return response()->json(['error' => 'already_generating'], 403);
         } catch (\Exception $e) {
             return response()->json(['error' => 'unknown'], 500);
         }
