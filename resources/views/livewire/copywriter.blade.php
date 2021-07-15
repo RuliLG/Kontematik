@@ -108,7 +108,7 @@
                 <div class="flex items-start justify-start">
                     <span class="h-8 w-8 flex-shrink-0 mr-4 bg-lightBlue-800 flex items-center justify-center rounded-full text-white font-bold text-sm">{{ $i + 1 }}</span>
                     <p class="font-bold text-gray-900" id="result_{{ $i }}">
-                        @result($response)
+                        {!! nl2br(str_replace('<', '&lt;', str_replace('>', '&gt;', $response))) !!}
                     </p>
                 </div>
                 <div class="flex-shrink-0 ml-4">
