@@ -137,11 +137,12 @@ class Copywriter {
 
         $result->user_tokens = Tokenizer::count(join('', array_values($data)));
         $result->total_tokens = Tokenizer::count($result->prompt);
+        $promptTokens = max(0, $result->total_tokens - $result->user_tokens);
 
         $response = (new Gpt3())
             ->engine($tool->gpt3_engine)
             ->temperature($tool->gpt3_temperature)
-            ->tokens($tool->gpt3_tokens)
+            ->tokens($tool->gpt3_tokens + $promptTokens)
             ->bestOf($tool->gpt3_best_of)
             ->take($tool->gpt3_n)
             ->completion($this->prompt($tool, $data, $language));
