@@ -1,4 +1,4 @@
-<div class="max-w-sm w-full" wire:init="notifyChanges()">
+<div class="max-w-sm w-full">
     @if (!empty($integrations))
     <label id="listbox-label" class="block text-sm font-medium text-gray-700">
         Select an integration

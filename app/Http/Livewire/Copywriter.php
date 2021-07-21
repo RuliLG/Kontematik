@@ -7,6 +7,7 @@ use App\Exceptions\LimitReachedException;
 use App\Exceptions\UnsafePrompt;
 use App\Models\Service;
 use App\Services\Copywriter as ServicesCopywriter;
+use App\Services\Integrations;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
@@ -53,6 +54,11 @@ class Copywriter extends Component
             ->sortBy('name')
             ->toArray();
 
+
+        $integrations = json_decode(json_encode((new Integrations())->active()), true);
+        if (!empty($integrations)) {
+            $this->integrationToken = $integrations[0]['token']['token'];
+        }
     }
 
     public function render()
