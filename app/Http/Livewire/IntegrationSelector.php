@@ -39,6 +39,6 @@ class IntegrationSelector extends Component
 
     public function notifyChanges()
     {
-        $this->emit('selectedToken', $this->selectedToken);
+        $this->emitUp('selectedToken', $this->selectedToken);
     }
 }
