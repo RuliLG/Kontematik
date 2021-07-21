@@ -113,7 +113,7 @@
                     :result="$result"
                     :i="$i"
                     :integrationToken="$integrationToken"
-                    :key="'result_' . $i"
+                    :wire:key="'result_' . $i"
                 ></livewire:result>
             </li>
             @endforeach
