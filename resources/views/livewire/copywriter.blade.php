@@ -1,7 +1,4 @@
 <div class="tooltip-parent">
-    <div class="flex justify-end">
-        <livewire:integration-selector></livewire:integration-selector>
-    </div>
     <form wire:submit.prevent="generate" onsubmit="trackGoal('DIIAOO6H')" id="copy-form">
         <div class="space-y-4">
             @foreach ($this->default_fields as $i => $field)
