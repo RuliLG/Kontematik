@@ -1,6 +1,6 @@
 <div class="tooltip-parent">
     <div class="flex justify-end">
-        <livewire:integration-selector></livewire:integration-selector>
+        <livewire:integration-selector wire:key="integration-selector"></livewire:integration-selector>
     </div>
     <form wire:submit.prevent="generate" onsubmit="trackGoal('DIIAOO6H')" id="copy-form">
         <div class="space-y-4">
