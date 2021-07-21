@@ -104,52 +104,52 @@
     </div>
 
     @if (!empty($responses))
-    <ul class="space-y-4 mt-8 -mx-4">
-        @foreach ($responses as $i => $response)
-        <li class="p-4">
-            <livewire:result
-                :response="$response"
-                :service="$service"
-                :result="$result"
-                :i="$i"
-                :integrationToken="$integrationToken"
-                :key="'result_' . $i"
-            ></livewire:result>
-        </li>
-        @endforeach
-    </ul>
+        <ul class="space-y-4 mt-8 -mx-4">
+            @foreach ($responses as $i => $response)
+            <li class="p-4">
+                <livewire:result
+                    :response="$response"
+                    :service="$service"
+                    :result="$result"
+                    :i="$i"
+                    :integrationToken="$integrationToken"
+                    :key="'result_' . $i"
+                ></livewire:result>
+            </li>
+            @endforeach
+        </ul>
 
-    <div class="flex flex-col justify-center items-center mt-16">
-        <span class="block text-center text-xl font-bold text-gray-900">{{ __('Rate this result') }}</span>
-        <div class="rating flex justify-center items-center mt-4">
-            @for ($i = 1; $i <= 5; $i++)
-            <button type="button" class="{{ $result->rating >= $i ? 'selected' : 'text-gray-500' }} focus:outline-none" wire:click="rate({{ $i }})">
-                @svg('eos-star', 'h-8 w-8')
+        <div class="flex flex-col justify-center items-center mt-16">
+            <span class="block text-center text-xl font-bold text-gray-900">{{ __('Rate this result') }}</span>
+            <div class="rating flex justify-center items-center mt-4">
+                @for ($i = 1; $i <= 5; $i++)
+                <button type="button" class="{{ $result->rating >= $i ? 'selected' : 'text-gray-500' }} focus:outline-none" wire:click="rate({{ $i }})">
+                    @svg('eos-star', 'h-8 w-8')
+                </button>
+                @endfor
+            </div>
+        </div>
+
+        @if (!$result->webflow_share_uuid)
+        <div class="text-center mt-8">
+            <button wire:loading.remove wire:target="share" type="button" wire:click="share" onclick="trackGoal('GXJK4T5S')" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg hover:bg-lightBlue-600 md:w-auto focus:outline-none">
+                @svg('eos-ios-share', 'w-6 h-6 mr-4')
+                Share
             </button>
-            @endfor
+            <div wire:loading wire:target="share" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg md:w-auto">
+                @svg('eos-ios-share', 'w-6 h-6 mr-4')<span>Generating sharing link...</span>
+            </div>
         </div>
-    </div>
-
-    @if (!$result->webflow_share_uuid)
-    <div class="text-center mt-8">
-        <button wire:loading.remove wire:target="share" type="button" wire:click="share" onclick="trackGoal('GXJK4T5S')" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg hover:bg-lightBlue-600 md:w-auto focus:outline-none">
-            @svg('eos-ios-share', 'w-6 h-6 mr-4')
-            Share
-        </button>
-        <div wire:loading wire:target="share" class="inline-flex justify-center items-center text-center w-full py-4 px-12 bg-lightBlue-700 text-white font-bold rounded-lg md:w-auto">
-            @svg('eos-ios-share', 'w-6 h-6 mr-4')<span>Generating sharing link...</span>
+        @else
+        <div class="mt-8">
+            <div class="border-dashed border-gray-300 border-2 rounded-lg p-8 text-lightBlue-700 text-base font-bold text-center" data-tooltip="{{ __('Click to copy') }}" data-action-tooltip="{{ __('Copied!') }}" onclick="copy('share-url', this)">
+                <span class="text-xl text-gray-900">{{ __('Share this URL with your team') }}</span>
+                <span id="share-url" class="mt-4">{{ $result->webflow_url }}</span>
+            </div>
+            <label wire:click="toggleIndexation" class="block mt-4 text-center">
+                <input type="checkbox" class="h-6 w-6 text-lightBlue-700" {{ $indexable ? '' : 'checked' }}> {{ __('I do not want this URL to be indexed on Google') }}
+            </label>
         </div>
-    </div>
-    @else
-    <div class="mt-8">
-        <div class="border-dashed border-gray-300 border-2 rounded-lg p-8 text-lightBlue-700 text-base font-bold text-center" data-tooltip="{{ __('Click to copy') }}" data-action-tooltip="{{ __('Copied!') }}" onclick="copy('share-url', this)">
-            <span class="text-xl text-gray-900">{{ __('Share this URL with your team') }}</span>
-            <span id="share-url" class="mt-4">{{ $result->webflow_url }}</span>
-        </div>
-        <label wire:click="toggleIndexation" class="block mt-4 text-center">
-            <input type="checkbox" class="h-6 w-6 text-lightBlue-700" {{ $indexable ? '' : 'checked' }}> {{ __('I do not want this URL to be indexed on Google') }}
-        </label>
-    </div>
+        @endif
     @endif
-@endif
 </div>
