@@ -22,6 +22,11 @@ class HubspotIntegration extends Integration {
         return asset('images/providers/hubspot.png');
     }
 
+    public function icon()
+    {
+        return asset('images/providers/hubspot_thumbnail.svg');
+    }
+
     public function description()
     {
         return 'Connect Kontematik to Hubspot and let us suggest new blog posts for your marketing strategy';

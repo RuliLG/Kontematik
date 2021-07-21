@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::post('login', [LoginController::class, 'login']);
 
-    Route::middleware('auth:oauth-api')->group(function () {
+    Route::middleware('auth:api', 'subscribed')->group(function () {
         Route::get('tools', [ToolsController::class, 'index']);
         Route::post('{tool:slug}/inference', [ToolsController::class, 'inference']);
         Route::post('oauth', [OauthController::class, 'perform']);

@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Spark\Http\Middleware\VerifyBillableIsSubscribed;
 
 class Kernel extends HttpKernel
 {
@@ -65,5 +66,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\IsAdmin::class,
         'service-enabled' => \App\Http\Middleware\ServiceEnabled::class,
         'auth-token' => \App\Http\Middleware\AuthToken::class,
+        'subscribed' => VerifyBillableIsSubscribed::class,
     ];
 }

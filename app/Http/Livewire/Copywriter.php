@@ -5,12 +5,8 @@ namespace App\Http\Livewire;
 use App\Exceptions\AlreadyGenerating;
 use App\Exceptions\LimitReachedException;
 use App\Exceptions\UnsafePrompt;
-use App\Models\SavedResult;
 use App\Models\Service;
-use App\Notifications\SavedResult as NotificationsSavedResult;
 use App\Services\Copywriter as ServicesCopywriter;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
@@ -19,7 +15,6 @@ class Copywriter extends Component
     public $service;
     public $data = [];
     public $responses = [];
-    public $saved = [];
     public $result = null;
     public $indexable = true;
     public $rating = 0;
@@ -33,6 +28,9 @@ class Copywriter extends Component
         'fr' => 'French',
         'pt' => 'Portuguese',
     ];
+    public $integrationToken = null;
+
+    protected $listeners = ['selectedToken' => 'userDidSelectToken'];
 
     public function mount(Service $service)
     {
@@ -104,35 +102,6 @@ class Copywriter extends Component
         $this->result = $response['result'];
         $this->indexable = $response['result']->is_indexable;
         $this->rating = intval($this->result->rating);
-        $this->saved = [];
-    }
-
-    public function saveGeneratedText ($idx)
-    {
-        $text = $this->result->response[$idx];
-        if (isset($this->saved[$text])) {
-            SavedResult::where([
-                'service_id' => $this->service->id,
-                'result_id' => $this->result->id,
-                'user_id' => Auth::id(),
-                'output' => $text,
-            ])->delete();
-            unset($this->saved[$text]);
-            return;
-        }
-
-        $saved = new SavedResult;
-        $saved->service_id = $this->service->id;
-        $saved->result_id = $this->result->id;
-        $saved->user_id = Auth::id();
-        $saved->params = is_string($this->result->params) ? $this->result->params : json_encode($this->result->params);
-        $saved->output = $text;
-        $saved->save();
-
-        $this->saved[$text] = true;
-
-        Notification::route('slack', config('services.slack.notification'))
-            ->notify(new NotificationsSavedResult($text, Auth::user(), $this->service));
     }
 
     public function share()
@@ -152,6 +121,11 @@ class Copywriter extends Component
         $this->result->rating = $rating;
         $this->result->save();
         $this->rating = $this->result->rating;
+    }
+
+    public function userDidSelectToken($token)
+    {
+        $this->integrationToken = $token;
     }
 
 }

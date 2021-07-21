@@ -42,6 +42,11 @@ abstract class Integration implements JsonSerializable {
         throw new MethodNotImplementedException('image');
     }
 
+    public function icon()
+    {
+        throw new MethodNotImplementedException('icon');
+    }
+
     public function description()
     {
         throw new MethodNotImplementedException('description');
@@ -72,6 +77,7 @@ abstract class Integration implements JsonSerializable {
             'id' => $this->id(),
             'name' => $this->name(),
             'description' => $this->description(),
+            'icon' => $this->icon(),
             'image' => $this->image(),
             'account_details' => $this->details(),
             'token' => $this->token,

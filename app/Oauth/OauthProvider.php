@@ -3,6 +3,7 @@
 namespace App\Oauth;
 
 use App\Exceptions\UnknownOauthAction;
+use App\Models\OauthToken;
 use App\Models\Service;
 use App\Models\ToolAction;
 use Illuminate\Http\Request;
@@ -45,5 +46,19 @@ abstract class OauthProvider {
         }
 
         throw new UnknownOauthAction('Unknown action', 500);
+    }
+
+    public function getToken ($request = null)
+    {
+        $request = $request ? $request : request();
+        $provider = $request->get('provider');
+        $token = OauthToken::where([
+            'provider' => $provider,
+            'user_id' => auth()->id(),
+        ])
+            ->where('expires_at', '>=', now())
+            ->first();
+
+        return $token ? $token->token : 'unauthenticated';
     }
 }

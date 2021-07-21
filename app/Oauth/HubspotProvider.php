@@ -39,7 +39,7 @@ class HubspotProvider extends OauthProvider {
         $imageUrl = $images ? $images[0]['urls']['full'] : null;
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $request->token,
+            'Authorization' => 'Bearer ' . $this->getToken($request),
         ])->post($this->endpoint . '/content/api/v2/blog-posts', [
             'name' => $title,
             'slug' => Str::slug($title),
@@ -56,7 +56,7 @@ class HubspotProvider extends OauthProvider {
     public function doPage (Request $request)
     {
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $request->token,
+            'Authorization' => 'Bearer ' . $this->getToken($request),
         ])->post($this->endpoint . '/content/api/v2/pages', [
             'name' => $request->get('text'),
             'slug' => Str::slug($request->get('text')),
@@ -85,7 +85,7 @@ class HubspotProvider extends OauthProvider {
 
         foreach ($pages as $page) {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $request->token,
+                'Authorization' => 'Bearer ' . $this->getToken($request),
             ])->post($this->endpoint . '/content/api/v2/pages', [
                 'name' => $page['raw'],
                 'slug' => Str::slug($page['title']),
@@ -100,7 +100,7 @@ class HubspotProvider extends OauthProvider {
     private function getBlogs (Request $request)
     {
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $request->token,
+            'Authorization' => 'Bearer ' . $this->getToken($request),
         ])->get($this->endpoint . '/content/api/v2/blogs');
         $response->throw();
         $response = $response->json();

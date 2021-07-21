@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 header('X-Robots-Tag: noindex, nofollow');
 
 Route::get('/', function () {
-    return Auth::check() ? redirect(route('dashboard')) : redirect(route('login'));
+    return auth()->check() ? redirect(route('dashboard')) : redirect(route('login'));
 });
 
 Route::middleware('auth', 'verified')->group(function () {
@@ -38,11 +38,6 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/service/new', [AdminController::class, 'renderNewService'])->name('admin.new-service');
         Route::get('/admin/service/{service:slug}', [AdminController::class, 'renderEditService'])->name('admin.service');
     });
-});
-
-Route::middleware('auth-token', 'verified')->group(function () {
-    Route::get('/integrations/hubspot', [HubspotController::class, 'render'])->name('hubspot');
-    Route::post('/integrations/hubspot', [HubspotController::class, 'oauth']);
 });
 
 require __DIR__.'/auth.php';

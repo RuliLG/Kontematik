@@ -5,8 +5,9 @@ namespace App\Integrations;
 use Illuminate\Support\Arr;
 use ReflectionClass;
 use Illuminate\Support\Str;
+use JsonSerializable;
 
-class AccountDetails {
+class AccountDetails implements JsonSerializable {
     public const USER = 'user';
     public const SITE_ID = 'site_id';
     public const SITE_NAME = 'site_name';
@@ -21,6 +22,19 @@ class AccountDetails {
     {
         $this->map_[$objKey] = $dataKey;
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        $data = [];
+        $oClass = new ReflectionClass(__CLASS__);
+        $constants = $oClass->getConstants();
+        foreach ($constants as $constant => $value) {
+            $methodName = 'get' . ucfirst(Str::camel($value));
+            $data[$value] = \call_user_func([$this, $methodName]);
+        }
+
+        return $data;
     }
 
     public function __call($name, $args)
