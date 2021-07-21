@@ -46,3 +46,30 @@ window.alpineFieldLength = function (fieldName, max) {
         text: document.getElementById(fieldName).getAttribute('data-initial-value') || ''
     }
 };
+
+window.addEventListener('load', function () {
+    const apiKeyMeta = document.querySelector('meta[name="api_token"]');
+    if (apiKeyMeta) {
+        setTimeout(() => {
+            if (!window.kontematikExtension) {
+                const isChromeBased = !!window.chrome;
+                const $alert = document.querySelector('#kontematik-extension-alert');
+                if ($alert && isChromeBased && !sessionStorage.getItem('hasDisplayedExtensionAlert')) {
+                    sessionStorage.setItem('hasDisplayedExtensionAlert', 1);
+                    $alert.classList.remove('hidden');
+                    setTimeout(() => {
+                        $alert.classList.remove('opacity-0', 'transform');
+                    }, 500);
+
+                    const $closeButton = $alert.querySelector('.close');
+                    $closeButton.onclick = () => {
+                        $alert.classList.add('transform', 'opacity-0');
+                        setTimeout(() => {
+                            $alert.parentNode.removeChild($alert);
+                        }, 300);
+                    };
+                }
+            }
+        }, 5000);
+    }
+});
