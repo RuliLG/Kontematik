@@ -18,6 +18,11 @@ class WebflowIntegration extends Integration {
         return asset('images/providers/webflow.png');
     }
 
+    public function icon()
+    {
+        return asset('images/providers/webflow.png');
+    }
+
     public function description()
     {
         return 'Connect Kontematik to Webflow and let us suggest new posts for your blog';

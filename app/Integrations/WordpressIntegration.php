@@ -18,6 +18,11 @@ class WordpressIntegration extends Integration {
         return asset('images/providers/wordpress.png');
     }
 
+    public function icon()
+    {
+        return asset('images/providers/wordpress_thumbnail.png');
+    }
+
     public function description()
     {
         return 'Connect Kontematik to Wordpress and let us suggest new posts for your blog';

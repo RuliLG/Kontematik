@@ -18,6 +18,11 @@ class WixIntegration extends Integration {
         return asset('images/providers/wix.png');
     }
 
+    public function icon()
+    {
+        return asset('images/providers/wix.png');
+    }
+
     public function description()
     {
         return 'Connect Kontematik to Wix and let us suggest new posts for your blog';
