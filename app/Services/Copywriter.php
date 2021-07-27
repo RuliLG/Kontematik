@@ -232,7 +232,8 @@ class Copywriter {
             $partial = array_merge([], $data);
             $partial[$tool->per_line_generation_field_name] = $line;
             $prompt = $this->prompt($tool, $partial, $language);
-            $totalTokens += Tokenizer::count($prompt);
+            $promptTokens = Tokenizer::count($prompt);
+            $totalTokens += $promptTokens;
 
             $response = (new Gpt3())
                 ->engine($tool->gpt3_engine)

@@ -63,4 +63,9 @@ return [
         'secret' => env('HUBSPOT_SECRET'),
     ],
 
+    'core' => [
+        'token' => env('CORE_TOKEN'),
+        'url' => env('CORE_URL'),
+    ],
+
 ];

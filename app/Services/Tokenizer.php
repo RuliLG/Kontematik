@@ -11,7 +11,6 @@ class Tokenizer {
      */
     public static function count ($text)
     {
-        // 1 token = 4 characters
-        return ceil(strlen($text) / 4);
+        return (new Core())->tokens($text);
     }
 }
