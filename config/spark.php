@@ -93,11 +93,12 @@ return [
     */
 
     'receipt_data' => [
-        'vendor' => 'Kontematik',
+        'vendor' => 'Inboundlabs Hispanic S.L.',
         'product' => 'Kontematik',
-        'street' => 'Calle Practicante Ignacio Rodríguez, s/n',
+        'street' => 'Carretera General de Tamaraceite 92 1A 35018',
         'location' => 'Las Palmas de Gran Canaria, Spain',
         'phone' => '+34 682 793 612',
+        'vendorVat' => 'B76334283',
     ],
 
     /*
