@@ -16,6 +16,19 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class Copywriter {
+    private $origin = null;
+    private $originUrl = null;
+
+    public function setOrigin($origin) {
+        $this->origin = $origin;
+    }
+
+    public function setOriginUrl($originUrl) {
+        if ($originUrl) {
+            $this->originUrl = parse_url($originUrl, PHP_URL_HOST);
+        }
+    }
+
     public function generate(Service $tool, $data, $language = 'auto')
     {
         $tool->load('prompts');
@@ -142,6 +155,13 @@ class Copywriter {
         $result->language_code = $language;
         $result->prompt = $this->prompt($tool, $data, $language);
         $result->params = json_encode($data);
+        if ($this->origin) {
+            $result->origin = $this->origin;
+        }
+
+        if ($this->originUrl) {
+            $result->origin_url = $this->originUrl;
+        }
 
         // Validate prompt against OpenAI
         if (!$this->promptIsValid($result->prompt)) {

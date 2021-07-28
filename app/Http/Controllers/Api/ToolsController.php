@@ -40,6 +40,10 @@ class ToolsController extends Controller
     {
         $copywriter = new Copywriter;
         Validator::make($request->except(['token', 'provider']), $copywriter->validationRules($tool))->validate();
+
+        $copywriter->setOrigin($request->get('origin', 'website'));
+        $copywriter->setOriginUrl($request->get('origin_url'));
+
         try {
             $response = $copywriter->generate($tool, $request->except(['token', 'provider']), $request->get('language', 'auto'));
         } catch (LimitReachedException $e) {

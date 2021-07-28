@@ -91,6 +91,9 @@ class Copywriter extends Component
         $copywriter = new ServicesCopywriter;
         $this->validate($copywriter->validationRules($this->service, 'data.'));
 
+        $copywriter->setOrigin('website');
+        $copywriter->setOriginUrl(url('/'));
+
         try {
             $response = $copywriter->generate($this->service, $this->data, $this->language);
         } catch (LimitReachedException $e) {
