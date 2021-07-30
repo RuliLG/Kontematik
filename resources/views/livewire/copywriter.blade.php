@@ -75,6 +75,12 @@
         </x-warning>
         @enderror
 
+        @error('rate_limit')
+        <x-warning>
+            {{ $message }}
+        </x-warning>
+        @enderror
+
         @error('unsafe_prompt')
         <x-warning>
             Oops! The entered text seems to use profane, prejudiced or hateful language, something that could be NSFW, or text that portrays certain groups/people in a harmful manner. Continous of this kind of language may lead to the cancellation of your account. Please, change your input and try again.

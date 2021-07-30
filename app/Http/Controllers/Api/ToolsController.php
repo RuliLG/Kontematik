@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\AlreadyGenerating;
 use App\Exceptions\LimitReachedException;
+use App\Exceptions\RateLimitException;
 use App\Exceptions\UnsafePrompt;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
@@ -52,6 +53,8 @@ class ToolsController extends Controller
             return response()->json(['error' => 'unsafe_prompt'], 403);
         } catch (AlreadyGenerating $e) {
             return response()->json(['error' => 'already_generating'], 403);
+        } catch (RateLimitException $e) {
+            return response()->json(['error' => 'rate_limit', 'message' => $e->getMessage()], 403);
         } catch (\Exception $e) {
             return response()->json(['error' => 'unknown'], 500);
         }

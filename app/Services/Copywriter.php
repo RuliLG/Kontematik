@@ -41,6 +41,8 @@ class Copywriter {
             throw new AlreadyGenerating();
         }
 
+        (new RateLimiter())->validate($tool);
+
         $language_ = null;
 
         if ($language === 'auto') {

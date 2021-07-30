@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Exceptions\AlreadyGenerating;
 use App\Exceptions\LimitReachedException;
+use App\Exceptions\RateLimitException;
 use App\Exceptions\UnsafePrompt;
 use App\Models\Service;
 use App\Services\Copywriter as ServicesCopywriter;
@@ -101,6 +102,9 @@ class Copywriter extends Component
             return;
         } catch (UnsafePrompt $e) {
             $this->addError('unsafe_prompt', true);
+            return;
+        } catch (RateLimitException $e) {
+            $this->addError('rate_limit', $e->getMessage());
             return;
         } catch (AlreadyGenerating $e) {
             $this->addError('already_generating', true);
