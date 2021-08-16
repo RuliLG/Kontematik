@@ -32,7 +32,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('hooks', function () {
             if (auth()->user()->role === 'admin') {
-                $hooks = json_decode(file_get_contents(storage_path('app/hooks.json')), true);
+                $hooks = json_decode(file_get_contents(storage_path('hooks.json')), true);
                 return response()->json($hooks);
             }
 
