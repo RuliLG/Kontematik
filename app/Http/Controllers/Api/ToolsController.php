@@ -21,10 +21,9 @@ class ToolsController extends Controller
         $serviceIds = Service::enabled()->select('id')->get()->pluck('id');
         $categories = ServiceCategory::with([
                 'services' => function ($query) use ($serviceIds) {
-                    $query->whereIn('id', empty($serviceIds) ? [-1] : $serviceIds);
+                    return $query->whereIn('id', empty($serviceIds) ? [-1] : $serviceIds);
                 }
             ])
-            ->with('services.fields')
             ->orderBy('order', 'ASC')
             ->get()
             ->filter(function ($category) {
