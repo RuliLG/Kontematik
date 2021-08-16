@@ -7,6 +7,7 @@ use App\Exceptions\LimitReachedException;
 use App\Exceptions\RateLimitException;
 use App\Exceptions\UnsafePrompt;
 use App\Http\Controllers\Controller;
+use App\Models\SavedResult;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Services\Copywriter;
@@ -20,8 +21,7 @@ class ToolsController extends Controller
         $serviceIds = Service::enabled()->select('id')->get()->pluck('id');
         $categories = ServiceCategory::with([
                 'services' => function ($query) use ($serviceIds) {
-                    $query->whereIn('id', empty($serviceIds) ? [-1] : $serviceIds)
-                        ->where('is_enabled', true);
+                    $query->whereIn('id', empty($serviceIds) ? [-1] : $serviceIds);
                 }
             ])
             ->with('services.fields')
@@ -35,6 +35,39 @@ class ToolsController extends Controller
         return response()->json([
             'categories' => $categories,
         ]);
+    }
+
+    public function show (Service $tool)
+    {
+        if (!$tool->is_enabled) {
+            return response()->json(['error' => 'Tool not found'], 404);
+        }
+
+        $tool->load('fields');
+
+        return response()->json($tool);
+    }
+
+    public function save (Service $tool, Request $request)
+    {
+        $request->validate([
+            'result' => 'required|string',
+            'result_id' => 'required|exists:results,id',
+            'params' => 'required|array',
+        ]);
+        if (!$tool->is_enabled) {
+            return response()->json(['error' => 'Tool not found'], 404);
+        }
+
+        $saved = new SavedResult;
+        $saved->service_id = $tool->id;
+        $saved->result_id = $request->result_id;
+        $saved->user_id = auth()->id();
+        $saved->params = is_string($request->params) ? $request->params : json_encode($request->params);
+        $saved->output = $request->result;
+        $saved->save();
+
+        return response()->json($tool);
     }
 
     public function inference (Service $tool, Request $request)

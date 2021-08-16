@@ -1,0 +1,45 @@
+[
+    {
+        "provider": "hubspot",
+        "tokenName": "hubspot-token",
+        "url": {
+            "domainContains": "hubspotpreview",
+            "startsWith": ["/_hcms"]
+        },
+        "selector": ".blog-post__header",
+        "prepend": false,
+        "loading": {
+            "text": "Generating blog posts..."
+        },
+        "button": {
+            "text": "Generate post using Kontematik",
+            "showImage": true
+        },
+        "tool": {
+            "id": "bullet-point-to-blog",
+            "fields": {
+                "field_wHyi5": {
+                    "selector": ".blog-post__title",
+                    "required": true,
+                    "multipleBehavior": "first",
+                    "maxLength": 120,
+                    "requiredAlertText": "Please, introduce the blog post title before generating a post"
+                },
+                "field_326qq": {
+                    "selector": "#hs_cos_wrapper_post_body h2, #hs_cos_wrapper_post_body h3, #hs_cos_wrapper_post_body h4, #hs_cos_wrapper_post_body h5, #hs_cos_wrapper_post_body h6",
+                    "multipleBehavior": "multiline",
+                    "required": true,
+                    "maxLength": 400,
+                    "requiredAlertText": "Please, write the outline using H2-H6 tags"
+                }
+            }
+        },
+        "result": {
+            "selector": "#hs_cos_wrapper_post_body",
+            "remove": ["field_wHyi5"],
+            "clickBeforeSetting": true,
+            "imageField": "field_wHyi5"
+        },
+        "css": ".kontematik-plugin__button {\nbackground: #EAF0F6;\nfont-size: 14px;\npadding: 4px 8px;\ndisplay: flex;\nalign-items: center;\njustify-content: center;\ncolor: #506e91;\nborder: solid 1px #cbd6e2;\nborder-radius: 3px;\nfont-weight: 400;\n}\n.kontematik-plugin__button:hover, .kontematik-plugin__button:focus, .kontematik-plugin__button:active {\nbackground-color: #fff;\nborder: 1px solid #cbd6e2;\ncolor: #506e91;\nfont-weight: 400;\n}\n.kontematik-plugin__button-logo {\nheight: 16px;\nwidth: auto;\ndisplay: block;\nmargin-left: 4px;\n}"
+    }
+]
