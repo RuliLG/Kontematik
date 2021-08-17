@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ActiveAccount;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Spark\Http\Middleware\VerifyBillableIsSubscribed;
 
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
         'service-enabled' => \App\Http\Middleware\ServiceEnabled::class,
         'auth-token' => \App\Http\Middleware\AuthToken::class,
         'subscribed' => VerifyBillableIsSubscribed::class,
+        'active-account' => ActiveAccount::class,
     ];
 }

@@ -41,7 +41,7 @@ Route::prefix('v1')->group(function () {
         Route::get('tools', [ToolsController::class, 'index']);
         Route::get('tools/{tool:slug}', [ToolsController::class, 'show']);
 
-        Route::middleware('subscribed')->group(function () {
+        Route::middleware('active-account')->group(function () {
             Route::post('{tool:slug}/inference', [ToolsController::class, 'inference']);
             Route::post('{tool:slug}/save', [ToolsController::class, 'save']);
             Route::post('oauth', [OauthController::class, 'perform']);
