@@ -137,7 +137,7 @@ return [
                         'Access to our newest features',
                         '24/7 email support',
                     ],
-                    'trial_days' => 7,
+                    // 'trial_days' => 7,
                     'tokens' => 100000,
                 ],
             ],
