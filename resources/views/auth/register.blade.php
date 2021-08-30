@@ -14,7 +14,7 @@
 
             <!-- Name -->
             <div class="md:col-span-2">
-                <x-label for="name" :value="__('Name')" />
+                <x-label for="name" :value="__('app.full_name')" />
 
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
             </div>
@@ -38,7 +38,7 @@
 
             <!-- Confirm Password -->
             <div>
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
+                <x-label for="password_confirmation" :value="__('common.confirm_password')" />
 
                 <x-input id="password_confirmation" class="block mt-1 w-full"
                                 type="password"
@@ -47,13 +47,13 @@
 
             <div class="md:col-span-2">
                 <p class="block font-medium text-sm text-gray-700">
-                    {{ __('Which use cases would you be interested in using?') }}
+                    {{ (new Translation())->getOrTranslate('Which use cases would you be interested in using?') }}
                 </p>
                 <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
                     @foreach ($niches as $niche)
                     <label class="w-full flex items-center justify-start">
                         <input type="checkbox" class="h-6 w-6 text-purple-600 rounded border border-gray-300" name="niche[{{ $niche->id }}]" value="1" {{ old('niche.' . $niche->id) ? 'checked' : '' }}>
-                        <span class="ml-4 flex-1 text-gray-700 text-sm">{{ $niche->name }}</span>
+                        <span class="ml-4 flex-1 text-gray-700 text-sm">{{ (new Translation())->getOrTranslate($niche->name) }}</span>
                     </label>
                     @endforeach
                 </div>
@@ -68,11 +68,11 @@
 
             <div class="flex items-center justify-end mt-4 md:col-span-2">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
+                    {{ (new Translation())->getOrTranslate('Already registered?') }}
                 </a>
 
                 <x-button class="ml-4">
-                    {{ __('Register') }}
+                    {{ (new Translation())->getOrTranslate('Register') }}
                 </x-button>
             </div>
         </form>
