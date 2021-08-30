@@ -7,10 +7,10 @@
             </p>
         </div>
         <div class="flex-shrink-0 ml-4">
-            <button type="button" wire:click="save()" onclick="updateTooltip(this)" class="p-4 focus:outline-none {{ $isSaved ? 'text-lightBlue-700' : 'text-gray-400' }}" data-tooltip="{{ $isSaved ? __('Remove from your library') : __('Save to your library') }}" data-action-tooltip="{{ $isSaved ? __('Removed!') : __('Saved!') }}">
+            <button type="button" wire:click="save()" onclick="updateTooltip(this)" class="p-4 focus:outline-none {{ $isSaved ? 'text-lightBlue-700' : 'text-gray-400' }}" data-tooltip="{{ $isSaved ? __('app.remove_from_library') : __('app.save_to_library') }}" data-action-tooltip="{{ $isSaved ? __('app.removed') : __('app.saved') }}">
                 @svg('eos-bookmark', 'h-6 w-6')
             </button>
-            <button type="button" class="text-lightBlue-800 p-4 focus:outline-none" data-tooltip="{{ __('Copy to clipboard') }}" data-action-tooltip="{{ __('Copied!') }}" onclick="copy('{{ $id_ }}', this)">
+            <button type="button" class="text-lightBlue-800 p-4 focus:outline-none" data-tooltip="{{ __('app.click_copy') }}" data-action-tooltip="{{ __('app.copied') }}" onclick="copy('{{ $id_ }}', this)">
                 @svg('eos-content-copy', 'w-6 h-6')
             </button>
         </div>
@@ -19,7 +19,7 @@
     @if (!empty($actions))
     <div class="mt-4 relative">
         <div wire:loading wire:target="perform" class="text-center text-gray-700 text-lg w-full">
-            Performing action...
+            @lang('app.performing_action')
         </div>
         <ul class="flex flex-wrap justify-center" wire:loading.remove wire:target="perform">
             @foreach ($actions as $action => $label)

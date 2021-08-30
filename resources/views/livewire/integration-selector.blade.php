@@ -1,7 +1,7 @@
 <div class="max-w-sm w-full">
     @if (!empty($integrations))
     <label id="listbox-label" class="block text-sm font-medium text-gray-700">
-        Select an integration
+        @lang('app.select_integration')
     </label>
     <div class="mt-1 relative" x-data="{ open: false }">
         <button type="button"

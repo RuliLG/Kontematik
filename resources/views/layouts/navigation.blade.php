@@ -13,27 +13,26 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('app.dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('library')" :active="request()->routeIs('library')">
-                        {{ __('Library') }}
+                        {{ __('app.library') }}
                     </x-nav-link>
                     @if (Auth::user()->is_admin)
                     <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')">
-                        {{ __('Admin Dashboard') }}
+                        {{ __('app.admin') }}
                     </x-nav-link>
                     @endif
                 </div>
             </div>
 
-
             @cannot('can-generate')
             <div class="pl-8 ml-auto sm:pl-10">
                 <a href="/billing" class="bg-gradient-to-tr from-pink-500 to-lightBlue-600 font-bold text-white rounded-lg block text-sm px-4 py-2">
                     @if (!Auth::user()->subscribed() && Auth::user()->trial_days_left > 0)
-                    Free trial ({{ Auth::user()->trial_days_left }} {{ Auth::user()->trial_days_left == 1 ? 'day' : 'days' }} left)
+                    {{ trans_choice('app.trial_days_left', Auth::user()->trial_days_left, ['days' => Auth::user()->trial_days_left]) }}
                     @else
-                    Upgrade your plan
+                    @lang('app.upgrade')
                     @endif
                 </a>
             </div>
@@ -41,7 +40,7 @@
             @if (!Auth::user()->is_admin && Auth::user()->can('can-generate') && !Auth::user()->subscribed())
             <div class="pl-8 ml-auto sm:pl-10">
                 <a href="/billing" class="bg-gradient-to-tr from-pink-500 to-lightBlue-600 font-bold text-white rounded-lg block text-sm px-4 py-2">
-                    Free trial ({{ Auth::user()->trial_days_left }} {{ Auth::user()->trial_days_left == 1 ? 'day' : 'days' }} left)
+                    {{ trans_choice('app.trial_days_left', Auth::user()->trial_days_left, ['days' => Auth::user()->trial_days_left]) }}
                 </a>
             </div>
             @endif
@@ -63,10 +62,10 @@
 
                     <x-slot name="content">
                         <x-dropdown-link href="{{ route('profile') }}">
-                            {{ __('My account') }}
+                            {{ __('app.my_account') }}
                         </x-dropdown-link>
                         <x-dropdown-link href="/billing">
-                            {{ __('Billing') }}
+                            {{ __('app.billing') }}
                         </x-dropdown-link>
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -75,7 +74,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log out') }}
+                                {{ __('auth.log_out') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -98,10 +97,10 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('app.dashboard') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('library')" :active="request()->routeIs('library')">
-                {{ __('Library') }}
+                {{ __('app.library') }}
             </x-responsive-nav-link>
         </div>
 
@@ -122,10 +121,10 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link href="{{ route('profile') }}">
-                    {{ __('My account') }}
+                    {{ __('app.my_account') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link href="/billing">
-                    {{ __('Billing') }}
+                    {{ __('app.billing') }}
                 </x-responsive-nav-link>
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
@@ -134,7 +133,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log out') }}
+                        {{ __('auth.log_out') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

@@ -26,6 +26,7 @@ class Account extends Component
         'user.name' => 'required|string',
         'user.about' => 'sometimes|string',
         'user.company' => 'sometimes|string|max:255',
+        'user.preferred_language' => 'sometimes|string|in:es,en',
         'deletionInput' => 'sometimes|string',
     ];
 

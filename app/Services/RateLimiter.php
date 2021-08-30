@@ -34,7 +34,7 @@ class RateLimiter {
         }
 
         if ($generations >= $maxGenerations) {
-            throw new RateLimitException('You have reached the usage limit of ' . $maxGenerations . ' generations per ' . $timeUnit . '. Please, try again later or use another tool.');
+            throw new RateLimitException(__('app.reached_usage_limit', ['max' => $maxGenerations, 'unit' => __('app.unit_' . $timeUnit)]));
         }
     }
 }

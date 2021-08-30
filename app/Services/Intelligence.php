@@ -12,6 +12,11 @@ class Intelligence
         return $this->silver()->language($text);
     }
 
+    public function translate ($text, $toLang, $fromLang = null)
+    {
+        return $this->silver()->translate($text, $toLang, $fromLang);
+    }
+
     public function getKeywords ($text)
     {
         return $this->silver()->textRankKeywords($text);

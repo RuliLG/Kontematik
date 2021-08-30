@@ -1,9 +1,9 @@
 <div>
     <div class="py-6 px-4 sm:p-6 lg:pb-8">
         <div>
-            <h2 class="text-lg leading-6 font-medium text-gray-900">Preferences</h2>
+            <h2 class="text-lg leading-6 font-medium text-gray-900">@lang('app.preferences')</h2>
             <p class="mt-1 text-sm text-gray-500">
-                Introducing your preferences will help us recommend you the best tools for your use-cases.
+                @lang('app.preferences_subtitle')
             </p>
         </div>
 
@@ -13,7 +13,7 @@
                     @foreach ($niches as $niche)
                     <label class="w-full flex items-center justify-start">
                         <input type="checkbox" class="h-6 w-6 text-purple-600 rounded border border-gray-300" wire:model="selectedNiches.{{ $niche->id }}">
-                        <span class="ml-4 flex-1 text-gray-700">{{ $niche->name }}</span>
+                        <span class="ml-4 flex-1 text-gray-700">{{ (new Translation())->getOrTranslate($niche->name) }}</span>
                     </label>
                     @endforeach
                 </div>

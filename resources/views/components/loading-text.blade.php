@@ -3,7 +3,7 @@
         <span class="ml11 text-xl font-bold text-lightBlue-900">
             <span class="text-wrapper">
                 <span class="line line1 bg-lightBlue-900"></span>
-                <span class="letters">{{ $text ?? __('Generating your text') }}</span>
+                <span class="letters">{{ $text ?? __('app.generating') }}</span>
             </span>
         </span>
     </div>

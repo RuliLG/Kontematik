@@ -33,8 +33,9 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('can-generate', [TextGenerationPolicy::class, 'generate']);
 
-        Blade::directive('result', function ($expression) {
-            return "<?php echo nl2br(str_replace('<', '&lt;', str_replace('>', '&gt;', ${$expression}))); ?>";
+        Blade::directive('trans', function ($expression) {
+            dd("echo (new \App\Services\Translation())->getOrTranslate(${$expression});");
+            return "<?php echo (new \App\Services\Translation())->getOrTranslate(${$expression}); ?>";
         });
     }
 }

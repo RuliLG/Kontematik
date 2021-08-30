@@ -21,14 +21,14 @@
 
             <!-- Email Address -->
             <div class="md:col-span-2">
-                <x-label for="email" :value="__('Email')" />
+                <x-label for="email" :value="__('common.email')" />
 
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
             </div>
 
             <!-- Password -->
             <div>
-                <x-label for="password" :value="__('Password')" />
+                <x-label for="password" :value="__('common.password')" />
 
                 <x-input id="password" class="block mt-1 w-full"
                                 type="password"

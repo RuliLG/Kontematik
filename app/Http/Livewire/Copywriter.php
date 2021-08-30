@@ -9,6 +9,7 @@ use App\Exceptions\UnsafePrompt;
 use App\Models\Service;
 use App\Services\Copywriter as ServicesCopywriter;
 use App\Services\Integrations;
+use App\Services\Translation;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
@@ -22,14 +23,7 @@ class Copywriter extends Component
     public $rating = 0;
     public $languages = [];
     public $language = 'auto';
-    public $languageMap = [
-        'es' => 'Spanish',
-        'en' => 'English',
-        'de' => 'German',
-        'it' => 'Italian',
-        'fr' => 'French',
-        'pt' => 'Portuguese',
-    ];
+    public $languageMap = [];
     public $integrationToken = null;
 
     protected $listeners = ['selectedToken' => 'userDidSelectToken'];
@@ -43,6 +37,15 @@ class Copywriter extends Component
                 $this->data[$field->name] = Session::get($field->name, '');
             }
         }
+
+        $this->languageMap = [
+            'es' => (new Translation())->getOrTranslate('Spanish'),
+            'en' => (new Translation())->getOrTranslate('English'),
+            'de' => (new Translation())->getOrTranslate('German'),
+            'it' => (new Translation())->getOrTranslate('Italian'),
+            'fr' => (new Translation())->getOrTranslate('French'),
+            'pt' => (new Translation())->getOrTranslate('Portuguese'),
+        ];
 
         $this->language = Session::get('prompt_language', 'auto');
         $this->languages = $this->service->prompts->map(function ($prompt) {
