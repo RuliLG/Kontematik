@@ -58,6 +58,30 @@
             <main>
                 {{ $slot }}
             </main>
+
+            @if (Auth::check())
+            <div class="fixed right-0 left-0 bottom-0 max-w-xl mx-auto px-6 py-6 rounded-xl bg-pink-600 shadow-lg mb-24 md:mr-8 translate-y-20 transition duration-150 hidden" id="kontematik-extension-alert">
+                <div class="w-full" role="main" aria-label="description">
+                    <h2 role="heading" class="text-lg xl:text-xl text-white font-bold mb-4">@lang('app.extension_prompt_title')</h2>
+                    <p role="contentinfo" class="xl:text-lg text-white font-normal leading-7">@lang('app.extension_prompt_text')</p>
+                </div>
+                <a href="https://chrome.google.com/webstore/detail/kontematik/nkakelmmhcciklmlacojbdbajbadkkmn" target="_blank" rel="noopener noreferrer" aria-label="Download" class="absolute left-0 top-0 w-full h-full"></a>
+                <button type="button" class="absolute top-0 right-0 p-2 text-pink-100 hover:text-white close">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="fixed right-0 left-0 bottom-0 max-w-xl mx-auto px-6 py-6 rounded-xl bg-pink-600 shadow-lg mb-24 md:mr-8 translate-y-20 transition duration-150 hidden" id="kontematik-extension-auth-alert">
+                <div class="w-full" role="main" aria-label="description">
+                    <h2 role="heading" class="text-lg xl:text-xl text-white font-bold mb-4">@lang('app.extension_auth_title')</h2>
+                    <p role="contentinfo" class="xl:text-lg text-white font-normal leading-7">@lang('app.extension_auth_text')</p>
+                </div>
+                <button type="button" class="absolute top-0 right-0 p-2 text-pink-100 hover:text-white close">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            @endif
+
             @livewireScripts
             @stack('scripts')
         </div>
