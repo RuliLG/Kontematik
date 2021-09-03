@@ -48,6 +48,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::min(8)],
             'niche.*' => 'required|exists:niches,id',
             'accepts' => 'required',
+            'preferred_language' => 'required|in:es,en',
         ]);
 
         $user = User::create([
@@ -56,6 +57,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'accepted_terms_at' => now(),
             'accepted_terms_ip' => $request->ip(),
+            'preferred_language' => $request->preferred_language,
         ]);
 
         $niches = array_keys($request->get('niche') ?? []);

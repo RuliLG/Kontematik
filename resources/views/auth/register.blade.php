@@ -26,6 +26,16 @@
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
             </div>
 
+            <!-- Preferred language -->
+            <div class="md:col-span-2">
+                <x-label for="preferred_language" :value="__('app.language')" />
+
+                <select name="preferred_language" name="preferred_language" id="preferred_language" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lightBlue-500 focus:border-lightBlue-500 sm:text-sm">
+                    <option value="es" {{ session()->get('hl') === 'es' ? 'selected' : '' }}>Español</option>
+                    <option value="en" {{ session()->get('hl') === 'en' ? 'selected' : '' }}>English</option>
+                </select>
+            </div>
+
             <!-- Password -->
             <div>
                 <x-label for="password" :value="__('common.password')" />
