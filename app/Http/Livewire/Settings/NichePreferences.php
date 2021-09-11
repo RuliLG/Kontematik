@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Settings;
 
+use App\Jobs\AddPropertiesToMailjet;
 use App\Models\Niche;
 use App\Models\NicheUser;
 use Livewire\Component;
@@ -47,6 +48,8 @@ class NichePreferences extends Component
         } else if ($exists) {
             $exists->delete();
         }
+
+        dispatch(new AddPropertiesToMailjet(auth()->user()));
     }
 
     public function render()

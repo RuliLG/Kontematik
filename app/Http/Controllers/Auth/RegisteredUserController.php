@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\AddPropertiesToMailjet;
 use App\Models\Niche;
 use App\Models\NicheUser;
 use App\Models\User;
@@ -68,6 +69,8 @@ class RegisteredUserController extends Controller
                 $record->user_id = $user->id;
                 $record->save();
             }
+
+            dispatch(new AddPropertiesToMailjet($user));
         }
 
         event(new Registered($user));
