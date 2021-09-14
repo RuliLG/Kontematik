@@ -34,6 +34,7 @@ class HubspotProvider extends OauthProvider {
         });
         $blog = $languageBlogs->isEmpty() ? $blogs[0] : $languageBlogs[0];
         $title = explode("\n", $request->get('text'))[0];
+        $text = substr($request->get('text'), strlen($title));
 
         $images = (new Unsplash)->search($title, $language);
         $imageUrl = $images ? $images[0]['urls']['full'] : null;
@@ -43,7 +44,7 @@ class HubspotProvider extends OauthProvider {
         ])->post($this->endpoint . '/content/api/v2/blog-posts', [
             'name' => $title,
             'slug' => Str::slug($title),
-            'post_body' => str_replace("\n", '<br>', $request->get('text')),
+            'post_body' => $text,
             'content_group_id' => $blog['id'],
             'featured_image' => $imageUrl,
         ]);
