@@ -27,7 +27,7 @@ abstract class OauthProvider {
             'service_id' => $service->id,
         ])->first();
 
-        if (!$actions) {
+        if (!$actions || !$actions->actions) {
             return [];
         }
 
