@@ -33,7 +33,7 @@ class HubspotProvider extends OauthProvider {
         ])->post($this->endpoint . '/marketing-emails/v1/emails', [
             'name' => 'Marketing email from Kontematik',
             'subject' => 'Marketing email from Kontematik',
-            'emailBody' => $request->get('text'),
+            'emailBody' => str_replace("\n", '<br>', $request->get('text')),
         ]);
 
         $response->throw();
