@@ -157,4 +157,12 @@
         </div>
         @endif
     @endif
+
+    <script>
+        window.addEventListener('load', function () {
+            Livewire.on('actionPerformed', function (result) {
+                Swal.fire(result.title, result.message, result.success ? 'success' : 'error')
+            })
+        })
+    </script>
 </div>

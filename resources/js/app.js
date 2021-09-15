@@ -2,6 +2,8 @@ require('./bootstrap');
 
 require('alpinejs');
 
+import Swal from 'sweetalert2'
+
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -11,6 +13,8 @@ import { delegate } from 'tippy.js';
 var copy = require('clipboard-copy');
 
 AOS.init();
+
+window.Swal = Swal
 
 delegate('.tooltip-parent', {
     target: '[data-tooltip]',

@@ -22,7 +22,23 @@ class HubspotProvider extends OauthProvider {
             OauthAction::CREATE_PAGE => 'Create new page',
             OauthAction::CREATE_PAGES => 'Create pillar pages',
             OauthAction::CREATE_BLOG_POST => 'Create blog post',
+            OauthAction::CREATE_EMAIL => 'Create marketing email',
         ];
+    }
+
+    public function doEmail (Request $request)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->getToken($request),
+        ])->post($this->endpoint . '/marketing-emails/v1/emails', [
+            'name' => 'Marketing email from Kontematik',
+            'subject' => 'Marketing email from Kontematik',
+            'emailBody' => $request->get('text'),
+        ]);
+
+        $response->throw();
+
+        return response()->json(['success' => true, 'title' => 'Done!', 'message' => 'Marketing email created']);
     }
 
     public function doBlogPost (Request $request)
@@ -51,7 +67,7 @@ class HubspotProvider extends OauthProvider {
 
         $response->throw();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'title' => 'Done!', 'message' => 'Blog post created']);
     }
 
     public function doPage (Request $request)
@@ -65,7 +81,7 @@ class HubspotProvider extends OauthProvider {
 
         $response->throw();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'title' => 'Done!', 'message' => 'Landing page created']);
     }
 
     public function doPages (Request $request)
@@ -95,7 +111,7 @@ class HubspotProvider extends OauthProvider {
 
         $response->throw();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'title' => 'Done!', 'message' => 'Landing pages structure created']);
     }
 
     private function getBlogs (Request $request)

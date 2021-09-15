@@ -23,6 +23,7 @@
     "dependencies": {
         "aos": "^2.3.4",
         "clipboard-copy": "^4.0.1",
+        "sweetalert2": "^11.1.5",
         "tippy.js": "^6.3.1"
     }
 }

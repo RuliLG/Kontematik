@@ -79,10 +79,12 @@ class Result extends Component
         }
 
         $provider = OauthFactory::from($integration->provider);
-        $provider->perform($action, new \Illuminate\Http\Request([
+        $result = $provider->perform($action, new \Illuminate\Http\Request([
             'text' => $this->response,
             'provider' => $integration->provider,
-        ]));
+        ]))->getOriginalContent();
+
+        $this->emit('actionPerformed', $result);
     }
 
     private function getIntegration()
