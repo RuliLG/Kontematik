@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
         <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
         @livewireStyles
         @stack('styles')
 
@@ -22,7 +22,7 @@
         <!-- Fathom - beautiful, simple website analytics -->
         <script src="https://donkey.kontematik.com/script.js" data-site="STOBJFSB" defer></script>
         <!-- / Fathom -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
+        <script src="{{ mix('js/app.js') }}" defer></script>
         <!-- Hotjar Tracking Code for app.kontematik.com -->
         <script>
             (function(h,o,t,j,a,r){
