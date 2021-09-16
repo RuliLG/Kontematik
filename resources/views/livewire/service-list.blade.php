@@ -4,14 +4,21 @@
     <div wire:loading.delay="100" class="text-gray-700 font-bold">
         {{ __('common.loading') }}
     </div>
-    <div wire:loading.remove class="space-y-8">
+    <div wire:loading.remove class="space-y-8 tooltip-parent">
         @foreach ($categories as $category)
         <div>
             <h2 class="font-bold">{{ (new Translation())->getOrTranslate($category->name) }}</h2>
             <ul>
                 @foreach ($category->services as $s)
                 <li>
-                    <a href="{{ route('tool', ['service' => $s->slug]) }}" class="block px-4 py-2 hover:text-purple-600">{{ (new Translation())->getOrTranslate($s->name) }}</a>
+                    <a href="{{ route('tool', ['service' => $s->slug]) }}" class="flex justify-between px-4 py-2 hover:text-purple-600">
+                        {{ (new Translation())->getOrTranslate($s->name) }}
+                        <div>
+                            @if ($s->hubspot_actions->isNotEmpty())
+                            <img src="{{ asset('images/providers/hubspot_thumbnail.svg') }}" alt="Hubspot" class="h-4 w-4 object-contain" data-tooltip="Connect your Hubspot account inside your profile to create automatic content in Hubspot">
+                            @endif
+                        </div>
+                    </a>
                 </li>
                 @endforeach
             </ul>

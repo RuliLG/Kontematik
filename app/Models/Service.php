@@ -11,6 +11,8 @@ class Service extends Model
 {
     use HasFactory, Searchable;
 
+    protected $with = ['hubspot_actions'];
+
     public function category()
     {
         return $this->belongsTo(ServiceCategory::class, 'service_category_id', 'id');
@@ -25,6 +27,16 @@ class Service extends Model
     public function prompts()
     {
         return $this->hasMany(ServicePrompt::class);
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(ToolAction::class);
+    }
+
+    public function hubspot_actions()
+    {
+        return $this->actions()->where('provider', 'hubspot');
     }
 
     public function getTagsAttribute()
