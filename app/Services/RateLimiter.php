@@ -30,7 +30,7 @@ class RateLimiter {
             ->get();
         $generations = 0;
         foreach ($calls as $call) {
-            $generations += count($call->response);
+            $generations += $call->response && is_countable($call->response) ? count($call->response) : 0;
         }
 
         if ($generations >= $maxGenerations) {
