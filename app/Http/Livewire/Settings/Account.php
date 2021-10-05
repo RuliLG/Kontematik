@@ -102,6 +102,10 @@ class Account extends Component
     public function deleteUser()
     {
         if ($this->deletionKey === $this->deletionInput) {
+            if (optional($this->user->subscription())->recurring()) {
+                $this->user->subscription()->cancelNow();
+            }
+
             $this->user->delete();
             return redirect(route('login'));
         }
