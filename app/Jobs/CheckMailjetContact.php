@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Mailjet;
 
 class CheckMailjetContact implements ShouldQueue
@@ -36,12 +37,15 @@ class CheckMailjetContact implements ShouldQueue
     {
         try {
             $contact = Mailjet::getSingleContact($this->user->email);
+            $body = $contact->getBody();
+            Log::debug('Datos del contacto', [
+                'contact' => $body,
+            ]);
         } catch (\Exception $e) {
             dispatch(new AddContactToMailjet($this->user));
             return;
         }
 
-        $body = $contact->getBody();
         if (isset($body) && $body['Count'] === 1) {
             $data = $body['Data'][0];
             $this->user->mailjet_id = $data['ID'];
