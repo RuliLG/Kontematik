@@ -48,6 +48,13 @@ class UpdateMailjetContact implements ShouldQueue
                     'IsExcludedFromCampaigns' => $this->deleted ? true : !$this->user->notify_new_tools && !$this->user->notify_new_products,
                 ],
             ]);
+
+            if (!$this->deleted && $this->user->mailjet_id) {
+                $listResponse = Mailjet::createListRecipient([
+                    'ContactID' => $this->user->mailjet_id,
+                    'ListID' => config('services.mailjet.list_id'),
+                ]);
+            }
         } catch (\Exception $e) {
             Log::error($e);
         }

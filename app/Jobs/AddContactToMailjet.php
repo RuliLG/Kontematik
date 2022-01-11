@@ -46,15 +46,10 @@ class AddContactToMailjet implements ShouldQueue
                 $response = $response[0];
             }
 
-            Log::debug('Vamos a meter al contacto en la lista ' . config('services.mailjet.list_id'), [
-                'contact' => $response,
-            ]);
-
             $listResponse = Mailjet::createListRecipient([
                 'ContactID' => $response['ID'],
                 'ListID' => config('services.mailjet.list_id'),
             ]);
-            Log::debug($listResponse->getData());
         } catch (\Exception $e) {
             Log::error($e);
         }
