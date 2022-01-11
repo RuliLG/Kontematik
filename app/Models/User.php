@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\AddContactToMailjet;
 use App\Jobs\CheckMailjetContact;
 use App\Jobs\UpdateMailjetContact;
 use App\Policies\TextGenerationPolicy;
@@ -61,7 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
         });
 
         static::created(function ($user) {
-            dispatch(new CheckMailjetContact($user));
+            dispatch(new AddContactToMailjet($user));
         });
 
         static::deleting(function ($user) {
