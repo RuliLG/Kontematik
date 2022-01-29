@@ -123,10 +123,6 @@ class Gpt3 {
 
     private function getStopWord($prompt)
     {
-        if (strpos($prompt, '###') !== false) {
-            return '###';
-        }
-
-        return "\n";
+        return [" END", "###"];
     }
 }
