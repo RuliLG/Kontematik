@@ -2,28 +2,28 @@
 
 namespace App\Services;
 
-use SilverDiamond\SilverDiamond;
+use JoggApp\GoogleTranslate\GoogleTranslateFacade;
+use PhpScience\TextRank\TextRankFacade;
+use PhpScience\TextRank\Tool\StopWords\English;
 
 class Intelligence
 {
     public function detectLanguage ($text)
     {
         $text = substr($text, 0, 256);
-        return $this->silver()->language($text);
+        return GoogleTranslateFacade::detectLanguage($text)['language_code'];
     }
 
     public function translate ($text, $toLang, $fromLang = null)
     {
-        return $this->silver()->translate($text, $toLang, $fromLang);
+        return GoogleTranslateFacade::justTranslate($text, $toLang);
     }
 
     public function getKeywords ($text)
     {
-        return $this->silver()->textRankKeywords($text);
-    }
-
-    private function silver ()
-    {
-        return new SilverDiamond(config('services.silver-diamond.token'));
+        $api = new TextRankFacade();
+        $stopWords = new English();
+        $api->setStopWords($stopWords);
+        return $api->getOnlyKeyWords($text);
     }
 }

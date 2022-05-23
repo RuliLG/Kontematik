@@ -52,7 +52,7 @@ class Copywriter extends Component
             $lang = isset($this->languageMap[$prompt->language_code]) ? $prompt->language_code : $this->language;
             return [
                 'code' => $lang,
-                'name' => country_flag(mb_strtoupper($lang)) . ' ' . $this->languageMap[$lang],
+                'name' => country_flag_emoji(mb_strtoupper($lang)) . ' ' . $this->languageMap[$lang],
             ];
         })
             ->sortBy('name')
@@ -101,15 +101,19 @@ class Copywriter extends Component
         try {
             $response = $copywriter->generate($this->service, $this->data, $this->language);
         } catch (LimitReachedException $e) {
+            logger($e);
             $this->addError('limit_reached', true);
             return;
         } catch (UnsafePrompt $e) {
+            logger($e);
             $this->addError('unsafe_prompt', true);
             return;
         } catch (RateLimitException $e) {
+            logger($e);
             $this->addError('rate_limit', $e->getMessage());
             return;
         } catch (AlreadyGenerating $e) {
+            logger($e);
             $this->addError('already_generating', true);
             return;
         }

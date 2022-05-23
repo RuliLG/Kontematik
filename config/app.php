@@ -177,7 +177,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         Mailjet\LaravelMailjet\MailjetServiceProvider::class,
-        Mailjet\LaravelMailjet\MailjetMailServiceProvider::class,
         Mailjet\LaravelMailjet\Providers\ContactsServiceProvider::class,
 
     ],

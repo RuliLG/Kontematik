@@ -261,7 +261,7 @@
                                 <div class="grid grid-cols-1 gap-y-8">
                                     @foreach ($prompts as $lang => $text)
                                     <label class="text-sm text-gray-900">
-                                        <span class="block">{{ country_flag($lang) }} Prompt</span>
+                                        <span class="block">{{ country_flag_emoji($lang) }} Prompt</span>
                                         <textarea wire:model="prompts.{{ $lang }}" rows="7" class="block w-full border-gray-300 rounded-lg p-4"></textarea>
                                         @if ($promptErrors[$lang])
                                         <small class="text-red-600 text-lg block mt-2">{{ $promptErrors[$lang] }}</small>
