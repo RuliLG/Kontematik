@@ -118,7 +118,7 @@
                     :result="$result"
                     :i="$i"
                     :integrationToken="$integrationToken"
-                    :wire:key="'result_' . $i"
+                    :wire:key="'result_' . $result->id . '_' . $i"
                 ></livewire:result>
             </li>
             @endforeach
