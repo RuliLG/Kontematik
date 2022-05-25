@@ -129,8 +129,8 @@ return [
                 [
                     'name' => 'Kontematik Pro',
                     'short_description' => 'Perfect for small businesses.',
-                    'monthly_id' => 'kontematik_standard_monthly',
-                    'yearly_id' => 'kontematik_standard_yearly',
+                    'monthly_id' => env('STRIPE_MONTHLY_ID', 'kontematik_standard_monthly'),
+                    'yearly_id' => env('STRIPE_YEARLY_ID', 'kontematik_standard_yearly'),
                     'features' => [
                         'Unlimited runs',
                         'Access to all of our tools',
