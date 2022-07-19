@@ -16,7 +16,7 @@ class Intelligence
 
     public function translate ($text, $toLang, $fromLang = null)
     {
-        return GoogleTranslateFacade::justTranslate($text, $toLang);
+        return GoogleTranslateFacade::justTranslate($text, $toLang, $fromLang ?? $this->detectLanguage($text));
     }
 
     public function getKeywords ($text)
